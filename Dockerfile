@@ -6,6 +6,8 @@ COPY ./requirements.txt /app/requirements.txt
 
 RUN pip install --no-cache-dir --upgrade -r ./requirements.txt
 
+EXPOSE 8000
+
 COPY . .
 
-CMD ["fastapi", "run", "main.py", "--port", "80"]
+CMD ["hypercorn", "--bind", "0.0.0.0:8000", "main:app"]
