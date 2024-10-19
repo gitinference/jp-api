@@ -10,4 +10,4 @@ EXPOSE 8000
 
 COPY . .
 
-CMD ["hypercorn", "--bind", "0.0.0.0:8000", "main:app"]
+CMD ["fastapi", "run", "main.py", "--port", "8000"]

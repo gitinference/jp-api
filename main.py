@@ -8,6 +8,8 @@ import os
 load_dotenv()
 
 app = FastAPI()
+dp = DataTrade(str(os.environ.get("DATABASE_URL")))
+di = DataIndex(str(os.environ.get("DATABASE_URL")))
 
 @app.get("/")
 def index():
@@ -16,14 +18,12 @@ def index():
 # Endpoint to get the DataFrames
 @app.get("/data/trade/")
 async def get_data(time:str, types:str, agr:bool=False, group:bool=False, update:bool=False):
-    dp = DataTrade()
-    df = dp.process_int_jp(time, types, agr, group, update).collect()
+    df = dp.process_int_jp(time, types, agr, group, update)
     return df.to_dicts()
 
 @app.get("/data/index/consumer")
 async def get_consumer(update:bool=False):
-    dp = DataIndex(str(os.environ.get("DATABASE_URL")))
-    return dp.consumer_data(update).to_dicts()
+    return di.consumer_data(update).to_dicts()
 
 @app.get("/data/index/jp_index")
 async def get_jp_index(update:bool=False):
@@ -41,16 +41,14 @@ async def get_trade_file(time:str, types:str, agr:bool=False, group:bool=False, 
 
 @app.get("/files/index/consumer")
 async def get_consumer_file(update:bool=False):
-    dp = DataIndex(str(os.environ.get("DATABASE_URL")))
-    df = dp.consumer_data(update)
+    df = di.consumer_data(update)
     file_path = os.path.join(os.getcwd(), "data", "consumer.csv") #TODO: Change to temp file
     df.write_csv(file_path)
     return FileResponse(file_path, media_type='text/csv', filename="consumer.csv")
 
 @app.get("/files/index/jp_index")
 async def get_jp_index_file(update:bool=False):
-    dp = DataIndex(str(os.environ.get("DATABASE_URL")))
-    df = dp.jp_index_data(update)
+    df = di.jp_index_data(update)
     file_path = os.path.join(os.getcwd(), "data", "jp_index.csv")
     df.write_csv(file_path)
     return FileResponse(file_path, media_type='text/csv', filename="jp_index.csv")

@@ -1,5 +1,4 @@
 notebooks/
-data/
 
 # Ignore raw data files
 *.csv
