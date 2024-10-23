@@ -1,4 +1,7 @@
-FROM python:3.12
+FROM --platform=$BUILDPLATFORM python:3.12 AS build
+
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
 
 WORKDIR /app
 

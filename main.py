@@ -1,4 +1,4 @@
-from src.jp_imports.src.jp_imports.data_process import DataProcess as DataTrade
+from src.jp_imports.src.jp_imports.data_process import DataTrade
 from src.jp_index.src.data.data_process import DataProcess as DataIndex
 from fastapi.responses import FileResponse
 from dotenv import load_dotenv
