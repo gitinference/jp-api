@@ -17,9 +17,9 @@ def index():
 
 # Endpoint to get the DataFrames
 @app.get("/data/trade/")
-async def get_data(time:str, types:str, agr:bool=False, group:bool=False, update:bool=False):
-    df = dp.process_int_jp(time, types, agr, group, update)
-    return df.to_dicts()
+async def get_data(time:str, types:str, agr:bool=False, group:bool=False):
+    df = dp.process_int_jp(time, types, agr, group)
+    return df.to_pandas().to_dicts()
 
 @app.get("/data/index/consumer")
 async def get_consumer(update:bool=False):
@@ -32,9 +32,9 @@ async def get_jp_index(update:bool=False):
 
 # Endpoints to download files
 @app.get("/files/trade/")
-async def get_trade_file(time:str, types:str, agr:bool=False, group:bool=False, update:bool=False):
+async def get_trade_file(time:str, types:str, agr:bool=False, group:bool=False):
     dp = DataTrade()
-    df = dp.process_int_jp(time, types, agr, group, update)
+    df = dp.process_int_jp(time, types, agr, group)
     file_path = os.path.join(os.getcwd(), "data", f"{time}_{types}.csv")
     df.write_csv(file_path)
     return FileResponse(file_path, media_type='text/csv', filename=f"{time}_{types}.csv")

@@ -13,4 +13,9 @@ EXPOSE 8000
 
 COPY . .
 
-CMD ["fastapi", "run", "main.py", "--port", "8000"]
+# Create a script to run both commands
+RUN printf '#!/bin/sh \n\
+  python init.py && fastapi main.py --port 8000' > start.sh && \
+  chmod +x start.sh
+
+CMD ["./start.sh"]
