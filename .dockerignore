@@ -10,6 +10,7 @@ notebooks/
 *.xml
 *.parquet
 *.pkl
+*.zip
 
 # Ignore all database files
 *.db

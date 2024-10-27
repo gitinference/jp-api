@@ -1,8 +1,8 @@
 from src.jp_imports.src.jp_imports.data_process import DataTrade
 from src.jp_index.src.data.data_process import DataProcess as DataIndex
+from fastapi import FastAPI, BackgroundTasks
 from fastapi.responses import FileResponse
 from dotenv import load_dotenv
-from fastapi import FastAPI
 import os
 
 load_dotenv()
@@ -12,14 +12,15 @@ dp = DataTrade(str(os.environ.get("DATABASE_URL")))
 di = DataIndex(str(os.environ.get("DATABASE_URL")))
 
 @app.get("/")
-def index():
+def index(background_tasks: BackgroundTasks):
+    background_tasks.add_task(dp.process_int_org, "yearly", "total", False)
     return {"message": "Hello World"}
 
 # Endpoint to get the DataFrames
 @app.get("/data/trade/")
 async def get_data(time:str, types:str, agr:bool=False, group:bool=False):
     df = dp.process_int_jp(time, types, agr, group)
-    return df.to_pandas().to_dicts()
+    return df.to_pandas().to_dict()
 
 @app.get("/data/index/consumer")
 async def get_consumer(update:bool=False):
