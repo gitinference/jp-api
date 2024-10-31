@@ -13,14 +13,13 @@ os.chdir("..")
 
 ```{python}
 from src.jp_imports.src.jp_imports.data_process import DataTrade
-from src.jp_index.src.data.data_process import DataProcess as DataIndex
+from src.jp_index.src.data.data_process import  DataIndex
 import os
 
-url = "postgresql://postgres:password@localhost:5432/timescaledb"
+url = "postgresql://postgres:password@localhost:5432/postgres"
 dp = DataTrade(url, debug=True)
 ```
 
 ```{python}
-df = dp.process_int_org("yearly", "total")
-df.to_polars()
+dp.conn.table("inttradedata").count().execute()
 ```

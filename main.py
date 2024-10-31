@@ -1,57 +1,118 @@
 from src.jp_imports.src.jp_imports.data_process import DataTrade
-from src.jp_index.src.data.data_process import DataProcess as DataIndex
-from fastapi import FastAPI, BackgroundTasks
+from src.jp_index.src.data.data_process import DataIndex
 from fastapi.responses import FileResponse
-from dotenv import load_dotenv
+from contextlib import asynccontextmanager
 from env import db_credentials
-
+from fastapi import FastAPI
+import numpy as np
+import asyncio
 import os
 
-load_dotenv()
-
-app = FastAPI()
-dp = DataTrade(db_credentials())
+# Initialize DataTrade and DataIndex with db_credentials
+dt = DataTrade(db_credentials(), debug=True)
 di = DataIndex(db_credentials())
 
+async def init_data(db_url):
+    dt = DataTrade(db_url, debug=True)
+    di = DataIndex(db_url, debug=True)
+
+    tables = dt.conn.list_tables()
+    tasks = []
+
+    # Initialize jptradedata
+    if "jptradedata" not in tables or await asyncio.to_thread(dt.conn.table("jptradedata").count().execute) == 0:
+        tasks.append(asyncio.to_thread(dt.insert_int_jp, dt.jp_data, dt.agr_file))
+
+    # Wait for jptradedata to be inserted before checking inttradedata
+    await asyncio.gather(*tasks)
+
+    # Check and initialize inttradedata
+    if "inttradedata" not in tables or await asyncio.to_thread(dt.conn.table("inttradedata").count().execute) == 0:
+        tasks.clear()  # Clear the tasks list for new operations
+        inttradedata_task = asyncio.to_thread(dt.pull_int_org)
+        insert_task = asyncio.to_thread(dt.insert_int_org, dt.org_data)
+
+        # Wait for inttradedata tasks to complete before moving on
+        await asyncio.gather(inttradedata_task, insert_task)
+
+    # Initialize consumertable
+    if "consumertable" not in tables or await asyncio.to_thread(dt.conn.table("consumertable").count().execute) == 0:
+        tasks.append(asyncio.to_thread(di.process_consumer, True))
+
+    # Initialize indicatorstable
+    if "indicatorstable" not in tables or await asyncio.to_thread(dt.conn.table("indicatorstable").count().execute) == 0:
+        tasks.append(asyncio.to_thread(di.process_jp_index, True))
+
+    # Gather and execute all remaining tasks
+    await asyncio.gather(*tasks)
+    print("Data initialized successfully.")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await init_data(db_credentials())
+    yield
+
+app = FastAPI(lifespan=lifespan)
+
 @app.get("/")
-def index(background_tasks: BackgroundTasks):
-    background_tasks.add_task(dp.process_int_org, "yearly", "total", False)
+def index():
     return {"message": "Hello World"}
 
 # Endpoint to get the DataFrames
-@app.get("/data/trade/")
+@app.get("/data/trade/jp/")
 async def get_data(time:str, types:str, agr:bool=False, group:bool=False):
-    df = dp.process_int_jp(time, types, agr, group)
+    df = dt.process_int_jp(time, types, agr, group)
     return df.to_pandas().to_dict()
+
+@app.get("/data/trade/org/")
+async def get_org_data(time:str, types:str, agr:bool=False, group:bool=False):
+    df = dt.process_int_org(time, types, agr, group)
+    return df.to_pandas().to_dict()
+
+@app.get("/data/tade/moving/")
+async def get_moving_data():
+    return dt.process_price().to_pandas().replace([np.nan, np.inf, -np.inf], [0, 0, 0]).to_dict()
 
 @app.get("/data/index/consumer")
 async def get_consumer(update:bool=False):
-    return di.consumer_data(update).to_dicts()
+    return di.consumer_data(update).to_pandas().to_dicts()
 
 @app.get("/data/index/jp_index")
 async def get_jp_index(update:bool=False):
-    dp = DataIndex(str(os.environ.get("DATABASE_URL")))
-    return dp.jp_index_data(update).to_dicts()
+    return di.jp_index_data(update).to_pandas().to_dicts()
 
 # Endpoints to download files
-@app.get("/files/trade/")
+@app.get("/files/trade/jp/")
 async def get_trade_file(time:str, types:str, agr:bool=False, group:bool=False):
-    dp = DataTrade()
-    df = dp.process_int_jp(time, types, agr, group)
+    df = dt.process_int_jp(time, types, agr, group)
     file_path = os.path.join(os.getcwd(), "data", f"{time}_{types}.csv")
-    df.write_csv(file_path)
+    df.to_csv(file_path)
     return FileResponse(file_path, media_type='text/csv', filename=f"{time}_{types}.csv")
+
+@app.get("/files/trade/org/")
+async def get_org_file(time:str, types:str, agr:bool=False, group:bool=False):
+    df = dt.process_int_org(time, types, agr, group)
+    file_path = os.path.join(os.getcwd(), "data", f"{time}_{types}.csv")
+    df.to_csv(file_path)
+    return FileResponse(file_path, media_type='text/csv', filename=f"{time}_{types}.csv")
+
+@app.get("/files/trade/moving")
+async def get_moving_file():
+    df = dt.process_price()
+    file_path = os.path.join(os.getcwd(), "data", "moving.csv")
+    df.write_csv(file_path)
+    return FileResponse(file_path, media_type='text/csv', filename="moving.csv")
 
 @app.get("/files/index/consumer")
 async def get_consumer_file(update:bool=False):
     df = di.consumer_data(update)
     file_path = os.path.join(os.getcwd(), "data", "consumer.csv") #TODO: Change to temp file
-    df.write_csv(file_path)
+    df.to_csv(file_path)
     return FileResponse(file_path, media_type='text/csv', filename="consumer.csv")
 
 @app.get("/files/index/jp_index")
 async def get_jp_index_file(update:bool=False):
     df = di.jp_index_data(update)
     file_path = os.path.join(os.getcwd(), "data", "jp_index.csv")
-    df.write_csv(file_path)
+    df.to_csv(file_path)
     return FileResponse(file_path, media_type='text/csv', filename="jp_index.csv")
