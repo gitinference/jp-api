@@ -3,13 +3,15 @@ from src.jp_index.src.data.data_process import DataProcess as DataIndex
 from fastapi import FastAPI, BackgroundTasks
 from fastapi.responses import FileResponse
 from dotenv import load_dotenv
+from env import db_credentials
+
 import os
 
 load_dotenv()
 
 app = FastAPI()
-dp = DataTrade(str(os.environ.get("DATABASE_URL")))
-di = DataIndex(str(os.environ.get("DATABASE_URL")))
+dp = DataTrade(db_credentials())
+di = DataIndex(db_credentials())
 
 @app.get("/")
 def index(background_tasks: BackgroundTasks):

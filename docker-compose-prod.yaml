@@ -1,4 +1,15 @@
 services:
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    command:
+      - "--label-enable"
+      - "--interval"
+      - "30"
+      - "--rolling-restart"
+      - "--cleanup"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
   database:
     image: postgres:17
     container_name: api_database
@@ -24,8 +35,9 @@ services:
 
   api:
     container_name: FastAPI
-    build:
-      context: .
+    image: ouslan/jp-api:latest
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
     restart: always
     secrets:
       - db-password
@@ -53,4 +65,4 @@ volumes:
 
 secrets:
   db-password:
-    file: password.txt
+    file: ~/db/password.txt

@@ -1,0 +1,40 @@
+---
+title: "Diagrams"
+format:
+  html:
+    code-fold: true
+jupyter: python3
+---
+
+```{python}
+from diagrams import Cluster, Diagram
+from diagrams.aws.compute import ECS
+from diagrams.aws.database import ElastiCache, RDS
+from diagrams.onprem.container import Docker
+from diagrams.aws.network import ELB
+from diagrams.onprem.database import Postgresql
+from diagrams.programming.language import Python
+from diagrams.aws.network import Route53
+```
+
+
+```{python}
+with Diagram("Clustered Web Services") as diag:
+    dns = Route53("dns")
+    lb = ELB("lb")
+    container = Docker("FastAPI")
+
+    with Cluster("Services"):
+        svc_group = [Python("Trade data"),
+                     Python("QCEW"),
+                     Python("Indecies")]
+
+    with Cluster("DB Cluster"):
+        db_primary = Postgresql("userdb")
+        db_primary - [Postgresql("data")]
+
+
+    dns >> lb >> svc_group >> container
+    container >> db_primary
+diag
+```
