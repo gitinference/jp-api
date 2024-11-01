@@ -3,6 +3,11 @@ services:
     image: postgres:17
     container_name: api_database
     restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
     secrets:
       - db-password
     ports:
