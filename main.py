@@ -70,8 +70,8 @@ async def get_org_data(time:str, types:str, agr:bool=False, group:bool=False):
     return df.to_pandas().to_dict()
 
 @app.get("/data/tade/moving/")
-async def get_moving_data():
-    return dt.process_price().to_pandas().replace([np.nan, np.inf, -np.inf], [0, 0, 0]).to_dict()
+async def get_moving_data(agr:bool=False):
+    return dt.process_price(agr=agr).to_pandas().replace([np.nan, np.inf, -np.inf], [0, 0, 0]).to_dict()
 
 @app.get("/data/index/consumer")
 async def get_consumer(update:bool=False):
@@ -97,10 +97,10 @@ async def get_org_file(time:str, types:str, agr:bool=False, group:bool=False):
     return FileResponse(file_path, media_type='text/csv', filename=f"{time}_{types}.csv")
 
 @app.get("/files/trade/moving")
-async def get_moving_file():
-    df = dt.process_price()
+async def get_moving_file(agr:bool=False):
+    df = dt.process_price(agr=agr)
     file_path = os.path.join(os.getcwd(), "data", "moving.csv")
-    df.write_csv(file_path)
+    df.to_csv(file_path)
     return FileResponse(file_path, media_type='text/csv', filename="moving.csv")
 
 @app.get("/files/index/consumer")
