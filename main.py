@@ -69,7 +69,7 @@ async def get_org_data(time:str, types:str, agr:bool=False, group:bool=False):
     df = dt.process_int_org(time, types, agr, group)
     return df.to_pandas().to_dict()
 
-@app.get("/data/tade/moving/")
+@app.get("/data/trade/moving/")
 async def get_moving_data(agr:bool=False):
     return dt.process_price(agr=agr).to_pandas().replace([np.nan, np.inf, -np.inf], [0, 0, 0]).to_dict()
 

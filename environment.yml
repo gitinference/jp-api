@@ -1,6 +1,4 @@
 name: jp-api
-channels:
-  - conda-forge
 dependencies:
   - pip=23.3.1
   - python=3.12
