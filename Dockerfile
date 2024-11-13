@@ -1,4 +1,7 @@
-FROM python:3.12
+FROM --platform=$BUILDPLATFORM python:3.12 AS build
+
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
 
 WORKDIR /app
 
@@ -10,4 +13,4 @@ EXPOSE 8000
 
 COPY . .
 
-CMD ["hypercorn", "--bind", "0.0.0.0:8000", "main:app"]
+CMD ["fastapi", "run", "main.py", "--port", "8000"]

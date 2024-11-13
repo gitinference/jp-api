@@ -167,3 +167,4 @@ cython_debug/
 data/external
 data/raw
 data/process
+*.sqlite
