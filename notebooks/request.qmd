@@ -1,0 +1,19 @@
+---
+title: "jp imports"
+format:
+  html:
+    code-fold: true
+jupyter: python3
+---
+
+```{python}
+import requests
+import pandas as pd 
+```
+
+
+```{python}
+url = "http://localhost/data/tade/moving/?agr=false"
+r = requests.get(url).json()
+pd.DataFrame(r)
+```
