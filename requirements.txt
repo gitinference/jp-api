@@ -10,8 +10,6 @@ pyarrow==17.0.0
 python-dotenv==1.0.1
 tqdm~=4.66.5
 sqlmodel==0.0.22
-ibis-framework==9.5.0
 pandas==2.2.3
-pyarrow==17.0.0
 pyarrow-hotfix==0.6
 packaging==24.1
