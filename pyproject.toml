@@ -1,0 +1,22 @@
+[project]
+name = "jp-api"
+authors = [{ name = "Alejandro Ousland", email = "alejandro.ouslan@upr.edu" }]
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi>=0.115.5",
+  "fastapi-cli>=0.0.5",
+  "packaging>=24.2",
+  "pandas>=2.2.3",
+  "polars>=1.16.0",
+  "psycopg2-binary>=2.9.10",
+  "pyarrow>=17.0.0",
+  "pyarrow-hotfix>=0.6",
+  "python-dotenv>=1.0.1",
+  "python-multipart>=0.0.19",
+  "sqlmodel>=0.0.22",
+  "tqdm>=4.67.1",
+  "ibis>=3.3.0",
+]
