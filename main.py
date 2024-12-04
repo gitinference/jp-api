@@ -89,11 +89,11 @@ async def get_moving_data(agr:bool=False):
 
 @app.get("/data/index/consumer")
 async def get_consumer(update:bool=False):
-    return di.consumer_data(update).to_pandas().to_dicts()
+    return di.process_consumer(update).to_pandas().to_dict()
 
 @app.get("/data/index/jp_index")
 async def get_jp_index(update:bool=False):
-    return di.jp_index_data(update).to_pandas().to_dicts()
+    return di.process_jp_index(update).to_pandas().to_dict()
 
 # Endpoints to download files
 @app.get("/files/trade/jp/")
@@ -106,7 +106,7 @@ async def get_trade_file(time:str, types:str, agr:bool=False, group:bool=False):
 @app.get("/files/trade/org/")
 async def get_org_file(time:str, types:str, agr:bool=False, group:bool=False):
     file_path = os.path.join(os.getcwd(), "data", "processed", f"org_{time}_{types}.csv")
-    
+
     if not os.path.exists(os.path.join(os.getcwd(), "data", "processed", f"org_{time}_{types}.csv")):
         df = dt.process_int_org(time, types, agr, group)
         df.to_csv(file_path)
@@ -115,7 +115,7 @@ async def get_org_file(time:str, types:str, agr:bool=False, group:bool=False):
 @app.get("/files/trade/moving")
 async def get_moving_file(agr:bool=False):
     file_path = os.path.join(os.getcwd(), "data", "processed", "moving.csv")
-    
+
     if not os.path.exists(os.path.join(os.getcwd(), "data", "processed", "moving.csv")):
         df = dt.process_price(agr=agr)
         df.to_csv(file_path)
@@ -123,14 +123,14 @@ async def get_moving_file(agr:bool=False):
 
 @app.get("/files/index/consumer")
 async def get_consumer_file(update:bool=False):
-    df = di.consumer_data(update)
+    df = di.process_consumer(update)
     file_path = os.path.join(os.getcwd(), "data", "consumer.csv") #TODO: Change to temp file
     df.to_csv(file_path)
     return FileResponse(file_path, media_type='text/csv', filename="consumer.csv")
 
 @app.get("/files/index/jp_index")
 async def get_jp_index_file(update:bool=False):
-    df = di.jp_index_data(update)
+    df = di.process_jp_index(update)
     file_path = os.path.join(os.getcwd(), "data", "jp_index.csv")
     df.to_csv(file_path)
     return FileResponse(file_path, media_type='text/csv', filename="jp_index.csv")
