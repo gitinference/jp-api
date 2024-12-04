@@ -87,6 +87,12 @@ async def get_moving_data(agr:bool=False):
     else:
         return pd.read_parquet(os.path.join(os.getcwd(), "data", "processed", "moving.parquet")).replace([np.nan, np.inf, -np.inf], [0, 0, 0]).to_dict()
 
+@app.get("/data/trade/ranking/"):
+async def get_ranking_data():
+    df = dt.process_price().filter(df.date == df.date.max())
+    df_min = df.filter(df.
+    
+
 @app.get("/data/index/consumer")
 async def get_consumer(update:bool=False):
     return di.process_consumer(update).to_pandas().to_dict()
