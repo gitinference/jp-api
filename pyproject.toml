@@ -17,8 +17,8 @@ dependencies = [
   "python-multipart>=0.0.19",
   "sqlmodel>=0.0.22",
   "tqdm>=4.67.1",
-  "ibis>=3.3.0",
   "jupyter>=1.1.1",
   "notebook>=7.3.0",
   "ipykernel>=6.29.5",
+  "ibis-framework[sqlite]>=9.5.0",
 ]

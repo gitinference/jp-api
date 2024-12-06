@@ -102,6 +102,7 @@
         impure = pkgs.mkShell {
           packages = [
             python
+            pkgs.jupyter
             pkgs.uv
           ];
           shellHook = ''

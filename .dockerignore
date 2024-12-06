@@ -30,4 +30,6 @@ notebooks/
 .yaml
 .env
 .venv/
+.mamba/
+.venv/
 .vscode/

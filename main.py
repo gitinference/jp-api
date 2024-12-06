@@ -61,37 +61,19 @@ def index():
 
 # Endpoint to get the DataFrames
 @app.get("/data/trade/jp/")
-async def get_data(time:str, types:str, agr:bool=False, group:bool=False):
-    if not os.path.exists(os.path.join(os.getcwd(), "data", "processed", f"jp_{time}_{types}.parquet")):
-        df = dt.process_int_jp(time, types, agr, group)
-        df.to_parquet(os.path.join(os.getcwd(), "data", "processed", f"jp_{time}_{types}.parquet"))
-        return df.to_pandas().to_dict()
-    else:
-        return pd.read_parquet(os.path.join(os.getcwd(), "data", "processed", f"jp_{time}_{types}.parquet")).to_dict()
+async def get_data(types:str, agg:str, time:str="", agr:bool=False, group:bool=False):
+    df = dt.process_int_jp(types=types, agg=str(agg), time=time, agr=agr, group=group)
+    return df.to_pandas().to_dict()
 
 @app.get("/data/trade/org/")
-async def get_org_data(time:str, types:str, agr:bool=False, group:bool=False):
-    if not os.path.exists(os.path.join(os.getcwd(), "data", "processed", f"org_{time}_{types}.parquet")):
-        df = dt.process_int_org(time, types, agr, group)
-        df.to_parquet(os.path.join(os.getcwd(), "data", "processed", f"org_{time}_{types}.parquet"))
-        return df.to_pandas().to_dict()
-    else:
-        return pd.read_parquet(os.path.join(os.getcwd(), "data", "processed", f"org_{time}_{types}.parquet")).to_dict()
+async def get_org_data(types:str, agg=str, time="", agr:bool=False, group:bool=False):
+    df = dt.process_int_org(types=types, agg=str(agg), time=time, agr=agr, group=group)
+    return df.to_pandas().to_dict()
 
 @app.get("/data/trade/moving/")
 async def get_moving_data(agr:bool=False):
-    if not os.path.exists(os.path.join(os.getcwd(), "data", "processed", "moving.parquet")):
-        df = dt.process_price(agr=agr)
-        df.to_parquet(os.path.join(os.getcwd(), "data", "processed", "moving.parquet"))
-        return df.to_pandas().replace([np.nan, np.inf, -np.inf], [0, 0, 0]).to_dict()
-    else:
-        return pd.read_parquet(os.path.join(os.getcwd(), "data", "processed", "moving.parquet")).replace([np.nan, np.inf, -np.inf], [0, 0, 0]).to_dict()
-
-@app.get("/data/trade/ranking/"):
-async def get_ranking_data():
-    df = dt.process_price().filter(df.date == df.date.max())
-    df_min = df.filter(df.
-    
+    df = dt.process_price(agr=agr)
+    return df.to_pandas().replace([np.nan, np.inf, -np.inf], [0, 0, 0]).to_dict()
 
 @app.get("/data/index/consumer")
 async def get_consumer(update:bool=False):
@@ -103,28 +85,24 @@ async def get_jp_index(update:bool=False):
 
 # Endpoints to download files
 @app.get("/files/trade/jp/")
-async def get_trade_file(time:str, types:str, agr:bool=False, group:bool=False):
-    df = dt.process_int_jp(time, types, agr, group)
-    file_path = os.path.join(os.getcwd(), "data", f"{time}_{types}.csv")
+async def get_trade_file(types:str, agg:str, time:str="", agr:bool=False, group:bool=False):
+    df = dt.process_int_jp(types=types, agg=str(agg), time=time, agr=agr, group=group)
+    file_path = os.path.join(os.getcwd(), "data", f"{agg}_{types}.csv")
     df.to_csv(file_path)
-    return FileResponse(file_path, media_type='text/csv', filename=f"{time}_{types}.csv")
+    return FileResponse(file_path, media_type='text/csv', filename=f"{agg}_{types}.csv")
 
 @app.get("/files/trade/org/")
-async def get_org_file(time:str, types:str, agr:bool=False, group:bool=False):
-    file_path = os.path.join(os.getcwd(), "data", "processed", f"org_{time}_{types}.csv")
-
-    if not os.path.exists(os.path.join(os.getcwd(), "data", "processed", f"org_{time}_{types}.csv")):
-        df = dt.process_int_org(time, types, agr, group)
-        df.to_csv(file_path)
+async def get_org_file(types:str, agg:str, time:str="", agr:bool=False, group:bool=False):
+    df = dt.process_int_org(types=types, agg=str(agg), time=time, agr=agr, group=group)
+    file_path = os.path.join(os.getcwd(), "data", "processed", f"org_{agg}_{types}.csv")
+    df.to_csv(file_path)
     return FileResponse(file_path, media_type='text/csv', filename=f"{time}_{types}.csv")
 
 @app.get("/files/trade/moving")
 async def get_moving_file(agr:bool=False):
     file_path = os.path.join(os.getcwd(), "data", "processed", "moving.csv")
-
-    if not os.path.exists(os.path.join(os.getcwd(), "data", "processed", "moving.csv")):
-        df = dt.process_price(agr=agr)
-        df.to_csv(file_path)
+    df = dt.process_price(agr=agr)
+    df.to_csv(file_path)
     return FileResponse(file_path, media_type='text/csv', filename="moving.csv")
 
 @app.get("/files/index/consumer")

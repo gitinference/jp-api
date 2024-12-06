@@ -7,19 +7,20 @@ jupyter: python3
 ---
 
 ```{python}
-import os
-os.chdir("..")
-```
-
-```{python}
 from src.jp_imports.src.jp_imports.data_process import DataTrade
 from src.jp_index.src.data.data_process import  DataIndex
+import ibis
 import os
 
+ibis.options.interactive = True
+
+
 url = "postgresql://postgres:password@localhost:5432/postgres"
-dp = DataTrade(url, debug=True)
+dt = DataTrade(url, debug=True)
 ```
 
 ```{python}
-dp.conn.table("inttradedata").count().execute()
+df = dt.process_price()
+df.filter(df.date == df.date.max())
+
 ```
