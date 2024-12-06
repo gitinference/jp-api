@@ -62,11 +62,13 @@ def index():
 # Endpoint to get the DataFrames
 @app.get("/data/trade/jp/")
 async def get_data(types:str, agg:str, time:str="", agr:bool=False, group:bool=False):
+    time = time.replace(" ", "+")
     df = dt.process_int_jp(types=types, agg=str(agg), time=time, agr=agr, group=group)
     return df.to_pandas().to_dict()
 
 @app.get("/data/trade/org/")
 async def get_org_data(types:str, agg=str, time="", agr:bool=False, group:bool=False):
+    time = time.replace(" ", "+")
     df = dt.process_int_org(types=types, agg=str(agg), time=time, agr=agr, group=group)
     return df.to_pandas().to_dict()
 
@@ -86,6 +88,7 @@ async def get_jp_index(update:bool=False):
 # Endpoints to download files
 @app.get("/files/trade/jp/")
 async def get_trade_file(types:str, agg:str, time:str="", agr:bool=False, group:bool=False):
+    time = time.replace(" ", "+")
     df = dt.process_int_jp(types=types, agg=str(agg), time=time, agr=agr, group=group)
     file_path = os.path.join(os.getcwd(), "data", f"{agg}_{types}.csv")
     df.to_csv(file_path)
@@ -93,6 +96,7 @@ async def get_trade_file(types:str, agg:str, time:str="", agr:bool=False, group:
 
 @app.get("/files/trade/org/")
 async def get_org_file(types:str, agg:str, time:str="", agr:bool=False, group:bool=False):
+    time = time.replace(" ", "+")
     df = dt.process_int_org(types=types, agg=str(agg), time=time, agr=agr, group=group)
     file_path = os.path.join(os.getcwd(), "data", "processed", f"org_{agg}_{types}.csv")
     df.to_csv(file_path)
