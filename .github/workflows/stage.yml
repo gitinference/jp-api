@@ -3,9 +3,8 @@ name: Staging Docker Image
 
 on:
   push:
-    branches: [ "STAGING" ]
-  pull_request:
-    branches: [ "STAGING" ]
+    branches:
+      - 'STAGING'
 
 jobs:
 

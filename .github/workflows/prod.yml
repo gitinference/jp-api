@@ -2,9 +2,8 @@ name: Production Docker Image
 
 on:
   push:
-    branches: [ "PRODUCTION" ]
-  pull_request:
-    branches: [ "PRODUCTION" ]
+    branches: 
+      - 'PRODUCTION'
 
 jobs:
 
