@@ -61,13 +61,9 @@ def index():
 
 # Endpoint to get the DataFrames
 @app.get("/data/trade/jp/")
-async def get_data(time:str, types:str, agr:bool=False, group:bool=False):
-    if not os.path.exists(os.path.join(os.getcwd(), "data", "processed", f"jp_{time}_{types}.parquet")):
-        df = dt.process_int_jp(time, types, agr, group)
-        df.to_parquet(os.path.join(os.getcwd(), "data", "processed", f"jp_{time}_{types}.parquet"))
-        return df.to_pandas().to_dict()
-    else:
-        return pd.read_parquet(os.path.join(os.getcwd(), "data", "processed", f"jp_{time}_{types}.parquet")).to_dict()
+async def get_data(time:str, types:str, agr:bool=False, group:bool=False,data_filter:str="", agg:str="", update:bool=False):
+    df = dt.process_int_org(time=time, types=types, agr=agr, group=group, filter=data_filter, agg=agg, update=update)
+    return df.to_pandas().to_dict()
 
 @app.get("/data/trade/org/")
 async def get_org_data(time:str, types:str, agr:bool=False, group:bool=False):
