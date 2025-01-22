@@ -1,34 +1,27 @@
-name: Build Docker Image for Staging
 
-on: 
-  workflow_dispatch:
-  
+name: Staging Docker Image
+
+on:
   push:
-    branches:
-      - 'STAGING'
-env:
-  DOCKER_IMAGE_NAME: ouslan/jp-api
-  DOCKER_REGISTRY_URL: hub.docker.com
+    branches: [ "STAGING" ]
+  pull_request:
+    branches: [ "STAGING" ]
 
 jobs:
-  build_docker_images:
-    # Job name that shows in the GitHub UI
-    name: Build Docker Images
-    # Runner to use
+
+  build:
+
     runs-on: self-hosted
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+    - uses: actions/checkout@v4
+
+    - name: Log in to Docker Hub
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag stage
+      run: docker build . --file Dockerfile --tag ouslan/jp-api:stage
 
-    - name: Puch the Docker image
-      run: docker push $DOCKER_REGISTRY_URL/$DOCKER_IMAGE_NAME:stage
+    - name: Push the Docker image
+      run: docker push ouslan/jp-api:stage
 
-    - name: Remove the local image
-      run: docker rmi $DOCKER_IMAGE_NAME:$RELEASE_VERSION
-
-    - name: Prune Docker
-      run: docker system prune -a -f
