@@ -16,8 +16,9 @@ def db_credentials():
     if os.environ.get("DEV") == "True":
         DB_PASSWORD = str(os.environ.get("POSTGRES_PASSWORD")).strip()
         HOST = "localhost"
+        DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{HOST}:{PORT}/{DB_DB}"
     else:
         DB_PASSWORD = str(read_secret_file("/run/secrets/db-password")).strip()
         HOST = "database"
-    DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{HOST}:{PORT}/{DB_DB}"
+        DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{HOST}:5432/{DB_DB}"
     return DATABASE_URL
