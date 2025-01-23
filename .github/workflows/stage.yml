@@ -4,7 +4,7 @@ name: Staging Docker Image
 on:
   push:
     branches:
-      - 'STAGING'
+      - 'main'
 
 jobs:
 
