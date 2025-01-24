@@ -161,7 +161,12 @@ async def get_consumer(update: bool = False):
 
 @app.get("/data/index/jp_index")
 async def get_jp_index(update: bool = False):
-    return di.process_jp_index(update).to_pandas().to_dict()
+    return (
+        di.process_jp_index(update)
+        .to_pandas()
+        .replace([np.nan, np.inf, -np.inf], [0, 0, 0])
+        .to_dict()
+    )
 
 
 # Endpoints to download files
