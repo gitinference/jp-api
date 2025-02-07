@@ -79,22 +79,42 @@ def index():
 
 # Endpoint to get the DataFrames
 @app.get("/data/trade/jp/")
-async def get_data(time:str, types:str, agr:bool=False, group:bool=False,data_filter:str="", agg:str="", update:bool=False):
-    df = dt.process_int_jp(time=time, types=types, agr=agr, group=group, filter=data_filter, agg=agg, update=update)
+async def get_jp_data(
+    types: str,
+    agg: str,
+    time: str = "",
+    agr: bool = False,
+    group: bool = False,
+    update: bool = False,
+    filter: str = "",
+):
+    df = dt.process_int_jp(
+        types=types,
+        agg=agg,
+        time=time,
+        agr=agr,
+        group=group,
+        update=update,
+        filter=filter,
+    )
     return df.to_pandas().to_dict()
+
 
 @app.get("/data/trade/jp/hts_codes/")
 async def get_data():
-    df = dt.process_int_jp(time="", types="hts", agg='yearly')
-    df = df.mutate(hts_code_first2=df.hts_code.substr(0, 2))  # Extraer las primeras dos posiciones
+    df = dt.process_int_jp(time="", types="hts", agg="yearly")
+    df = df.mutate(
+        hts_code_first2=df.hts_code.substr(0, 2)
+    )  # Extraer las primeras dos posiciones
     unique_first2_codes_df = df.select(df.hts_code_first2).distinct()  # Valores únicos
     unique_first2_codes = (
-        unique_first2_codes_df.execute()['hts_code_first2']
-        .dropna()  
-        .sort_values()  
-        .to_list()  
+        unique_first2_codes_df.execute()["hts_code_first2"]
+        .dropna()
+        .sort_values()
+        .to_list()
     )
     return {"hts_code_first2": unique_first2_codes}
+
 
 @app.get("/data/trade/org/")
 async def get_org_data(
