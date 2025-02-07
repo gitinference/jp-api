@@ -13,6 +13,7 @@ import os
 dt = DataTrade(db_credentials(), debug=True)
 di = DataIndex(db_credentials())
 
+
 async def init_data(db_url):
     dt = DataTrade(db_url, debug=True)
     di = DataIndex(db_url, debug=True)
@@ -21,14 +22,20 @@ async def init_data(db_url):
     tasks = []
 
     # Initialize jptradedata
-    if "jptradedata" not in tables or await asyncio.to_thread(dt.conn.table("jptradedata").count().execute) == 0:
+    if (
+        "jptradedata" not in tables
+        or await asyncio.to_thread(dt.conn.table("jptradedata").count().execute) == 0
+    ):
         tasks.append(asyncio.to_thread(dt.insert_int_jp, dt.jp_data, dt.agr_file))
 
     # Wait for jptradedata to be inserted before checking inttradedata
     await asyncio.gather(*tasks)
 
     # Check and initialize inttradedata
-    if "inttradedata" not in tables or await asyncio.to_thread(dt.conn.table("inttradedata").count().execute) == 0:
+    if (
+        "inttradedata" not in tables
+        or await asyncio.to_thread(dt.conn.table("inttradedata").count().execute) == 0
+    ):
         tasks.clear()  # Clear the tasks list for new operations
         inttradedata_task = asyncio.to_thread(dt.pull_int_org)
         insert_task = asyncio.to_thread(dt.insert_int_org, dt.org_data)
@@ -37,27 +44,38 @@ async def init_data(db_url):
         await asyncio.gather(inttradedata_task, insert_task)
 
     # Initialize consumertable
-    if "consumertable" not in tables or await asyncio.to_thread(dt.conn.table("consumertable").count().execute) == 0:
+    if (
+        "consumertable" not in tables
+        or await asyncio.to_thread(dt.conn.table("consumertable").count().execute) == 0
+    ):
         tasks.append(asyncio.to_thread(di.process_consumer, True))
 
     # Initialize indicatorstable
-    if "indicatorstable" not in tables or await asyncio.to_thread(dt.conn.table("indicatorstable").count().execute) == 0:
+    if (
+        "indicatorstable" not in tables
+        or await asyncio.to_thread(dt.conn.table("indicatorstable").count().execute)
+        == 0
+    ):
         tasks.append(asyncio.to_thread(di.process_jp_index, True))
 
     # Gather and execute all remaining tasks
     await asyncio.gather(*tasks)
     print("Data initialized successfully.")
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await init_data(db_credentials())
     yield
 
+
 app = FastAPI(lifespan=lifespan)
+
 
 @app.get("/")
 def index():
     return {"message": "Hello World"}
+
 
 # Endpoint to get the DataFrames
 @app.get("/data/trade/jp/")
@@ -79,67 +97,156 @@ async def get_data():
     return {"hts_code_first2": unique_first2_codes}
 
 @app.get("/data/trade/org/")
-async def get_org_data(time:str, types:str, agr:bool=False, group:bool=False):
-    if not os.path.exists(os.path.join(os.getcwd(), "data", "processed", f"org_{time}_{types}.parquet")):
-        df = dt.process_int_org(time, types, agr, group)
-        df.to_parquet(os.path.join(os.getcwd(), "data", "processed", f"org_{time}_{types}.parquet"))
+async def get_org_data(
+    types: str,
+    agg: str,
+    time: str = "",
+    agr: bool = False,
+    group: bool = False,
+    update: bool = False,
+    filter: str = "",
+):
+    if not os.path.exists(
+        os.path.join(os.getcwd(), "data", "processed", f"org_{time}_{types}.parquet")
+    ):
+        df = dt.process_int_org(
+            agg=agg,
+            types=types,
+            time=time,
+            agr=agr,
+            group=group,
+            update=update,
+            filter=filter,
+        )
+        df.to_parquet(
+            os.path.join(
+                os.getcwd(), "data", "processed", f"org_{time}_{types}.parquet"
+            )
+        )
         return df.to_pandas().to_dict()
     else:
-        return pd.read_parquet(os.path.join(os.getcwd(), "data", "processed", f"org_{time}_{types}.parquet")).to_dict()
+        return pd.read_parquet(
+            os.path.join(
+                os.getcwd(), "data", "processed", f"org_{time}_{types}.parquet"
+            )
+        ).to_dict()
+
 
 @app.get("/data/trade/moving/")
-async def get_moving_data(agr:bool=False):
-    if not os.path.exists(os.path.join(os.getcwd(), "data", "processed", "moving.parquet")):
+async def get_moving_data(agr: bool = False):
+    if not os.path.exists(
+        os.path.join(os.getcwd(), "data", "processed", "moving.parquet")
+    ):
         df = dt.process_price(agr=agr)
         df.to_parquet(os.path.join(os.getcwd(), "data", "processed", "moving.parquet"))
         return df.to_pandas().replace([np.nan, np.inf, -np.inf], [0, 0, 0]).to_dict()
     else:
-        return pd.read_parquet(os.path.join(os.getcwd(), "data", "processed", "moving.parquet")).replace([np.nan, np.inf, -np.inf], [0, 0, 0]).to_dict()
+        return (
+            pd.read_parquet(
+                os.path.join(os.getcwd(), "data", "processed", "moving.parquet")
+            )
+            .replace([np.nan, np.inf, -np.inf], [0, 0, 0])
+            .to_dict()
+        )
+
 
 @app.get("/data/index/consumer")
-async def get_consumer(update:bool=False):
+async def get_consumer(update: bool = False):
     return di.process_consumer(update).to_pandas().to_dict()
 
+
 @app.get("/data/index/jp_index")
-async def get_jp_index(update:bool=False):
-    return di.process_jp_index(update).to_pandas().to_dict()
+async def get_jp_index(update: bool = False):
+    return (
+        di.process_jp_index(update)
+        .to_pandas()
+        .replace([np.nan, np.inf, -np.inf], [0, 0, 0])
+        .to_dict()
+    )
+
 
 # Endpoints to download files
 @app.get("/files/trade/jp/")
-async def get_trade_file(time:str, types:str, agr:bool=False, group:bool=False):
-    df = dt.process_int_jp(time, types, agr, group)
+async def get_trade_file(
+    types: str,
+    agg: str,
+    time: str = "",
+    agr: bool = False,
+    group: bool = False,
+    update: bool = False,
+    filter: str = "",
+):
+    df = dt.process_int_jp(
+        agg=agg,
+        types=types,
+        time=time,
+        agr=agr,
+        group=group,
+        update=update,
+        filter=filter,
+    )
     file_path = os.path.join(os.getcwd(), "data", f"{time}_{types}.csv")
     df.to_csv(file_path)
-    return FileResponse(file_path, media_type='text/csv', filename=f"{time}_{types}.csv")
+    return FileResponse(
+        file_path, media_type="text/csv", filename=f"{time}_{types}.csv"
+    )
+
 
 @app.get("/files/trade/org/")
-async def get_org_file(time:str, types:str, agr:bool=False, group:bool=False):
-    file_path = os.path.join(os.getcwd(), "data", "processed", f"org_{time}_{types}.csv")
+async def get_org_file(
+    types: str,
+    agg: str,
+    time: str = "",
+    agr: bool = False,
+    group: bool = False,
+    update: bool = False,
+    filter: str = "",
+):
+    file_path = os.path.join(
+        os.getcwd(), "data", "processed", f"org_{time}_{types}.csv"
+    )
 
-    if not os.path.exists(os.path.join(os.getcwd(), "data", "processed", f"org_{time}_{types}.csv")):
-        df = dt.process_int_org(time, types, agr, group)
+    if not os.path.exists(
+        os.path.join(os.getcwd(), "data", "processed", f"org_{time}_{types}.csv")
+    ):
+        df = dt.process_int_org(
+            agg=agg,
+            types=types,
+            time=time,
+            agr=agr,
+            group=group,
+            update=update,
+            filter=filter,
+        )
         df.to_csv(file_path)
-    return FileResponse(file_path, media_type='text/csv', filename=f"{time}_{types}.csv")
+    return FileResponse(
+        file_path, media_type="text/csv", filename=f"{time}_{types}.csv"
+    )
+
 
 @app.get("/files/trade/moving")
-async def get_moving_file(agr:bool=False):
+async def get_moving_file(agr: bool = False):
     file_path = os.path.join(os.getcwd(), "data", "processed", "moving.csv")
 
     if not os.path.exists(os.path.join(os.getcwd(), "data", "processed", "moving.csv")):
         df = dt.process_price(agr=agr)
         df.to_csv(file_path)
-    return FileResponse(file_path, media_type='text/csv', filename="moving.csv")
+    return FileResponse(file_path, media_type="text/csv", filename="moving.csv")
+
 
 @app.get("/files/index/consumer")
-async def get_consumer_file(update:bool=False):
+async def get_consumer_file(update: bool = False):
     df = di.process_consumer(update)
-    file_path = os.path.join(os.getcwd(), "data", "consumer.csv") #TODO: Change to temp file
+    file_path = os.path.join(
+        os.getcwd(), "data", "consumer.csv"
+    )  # TODO: Change to temp file
     df.to_csv(file_path)
-    return FileResponse(file_path, media_type='text/csv', filename="consumer.csv")
+    return FileResponse(file_path, media_type="text/csv", filename="consumer.csv")
+
 
 @app.get("/files/index/jp_index")
-async def get_jp_index_file(update:bool=False):
+async def get_jp_index_file(update: bool = False):
     df = di.process_jp_index(update)
     file_path = os.path.join(os.getcwd(), "data", "jp_index.csv")
     df.to_csv(file_path)
-    return FileResponse(file_path, media_type='text/csv', filename="jp_index.csv")
+    return FileResponse(file_path, media_type="text/csv", filename="jp_index.csv")
