@@ -171,3 +171,5 @@ data/external
 data/raw
 data/process
 *.sqlite
+*.ddb
+*.wal
