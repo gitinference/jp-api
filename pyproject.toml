@@ -1,7 +1,7 @@
 [project]
 name = "jp-api"
 authors = [{ name = "Alejandro Ousland", email = "alejandro.ouslan@upr.edu" }]
-version = "0.3.4"
+version = "1.0.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -9,11 +9,12 @@ dependencies = [
   "fastapi[standard]>=0.115.5",
   "pandas>=2.2.3",
   "polars>=1.16.0",
-  "psycopg2-binary>=2.9.10",
   "python-dotenv>=1.0.1",
-  "sqlmodel>=0.0.22",
   "tqdm>=4.67.1",
   "requests>=2.32.3",
-  "ibis-framework[sqlite,duckdb,postgres]>=9.5.0",
+  "ibis-framework[duckdb,geospatial]>=9.5.0",
   "fastexcel>=0.12.1",
+  "sqlmodel>=0.0.22",
+  "numpy>=2.2.2",
+  "duckdb>=1.2.0",
 ]
