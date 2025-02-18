@@ -3,7 +3,7 @@ name: Staging Docker Image
 
 on:
   push:
-    branches:
+    branches: 
       - 'main'
       - '31-docker'
 
