@@ -13,9 +13,9 @@ di = DataIndex(database_file="data/data.ddb")
 async def get_jp_data(
     level: str,
     time_frame: str,
-    agriculture_filter: bool,
-    group: bool,
-    level_filter: str,
+    agriculture_filter: bool = False,
+    group: bool = False,
+    level_filter: str = "",
 ):
     df = dt.process_int_jp(
         level=level,
