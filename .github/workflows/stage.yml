@@ -1,4 +1,4 @@
-name: Build Staging Docker Image
+name: Staging Docker Image
 
 on:
   push:
@@ -7,9 +7,7 @@ on:
       - '31-docker'
 
 jobs:
-
   build:
-
     runs-on: self-hosted
 
     steps:
@@ -17,9 +15,14 @@ jobs:
       with:
         submodules: 'true'
 
-    - name: Build and publish "latest" Docker image
-      uses: VaultVulp/gp-docker-action@1.6.0
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
       with:
-        image-name: jp-api
-        dockerfile: .
-        image-tags: staging
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build Docker Image
+      run: |
+        docker build . --tag ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:testing
+
