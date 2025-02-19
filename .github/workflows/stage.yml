@@ -16,14 +16,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install toml library
-        run: pip install toml
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.12'  # Adjust this to match your project's Python version
 
       - name: Extract version from pyproject.toml
         id: extract_version
         run: |
-          VERSION=$(python -c "import toml; print(toml.load('pyproject.toml')['project']['version'])")
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          import toml
+          with open('pyproject.toml', 'r') as f:
+              config = toml.load(f)
+              version = config['project']['version']
+              print(f"Version: {version}")
+              print(f"::set-output name=version::{version}")
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
@@ -37,7 +43,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/econlabs/econlabs/jp-api:testing, ghcr.io/econlabs/econlabs/jp-api:${{ env.VERSION }}
-
-
+          tags: |
+            ghcr.io/econlabs/econlabs/jp-api:${{ steps.extract_version.outputs.version }}
+            ghcr.io/econlabs/econlabs/jp-api:latest
 
