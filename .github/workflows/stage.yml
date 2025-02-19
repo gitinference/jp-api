@@ -17,9 +17,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.9  # Adjust this to match your project's Python version
+          python-version: '3.13' # Adjust this to match your project's Python version
 
       - name: Extract version from pyproject.toml
         id: extract_version
