@@ -19,7 +19,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: /usr/bin/python3  # Adjust as needed
+          python-version: "/usr/bin/python3"  # Adjust as needed
 
       - name: Install toml package
         run: |
