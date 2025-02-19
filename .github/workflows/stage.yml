@@ -16,21 +16,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12.0-alpha.1'  # Adjust this to match your project's Python version
-
-      - name: Extract version from pyproject.toml
-        id: extract_version
-        run: |
-          import toml
-          with open('pyproject.toml', 'r') as f:
-              config = toml.load(f)
-              version = config['project']['version']
-              print(f"Version: {version}")
-              print(f"::set-output name=version::{version}")
-
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
@@ -43,7 +28,13 @@ jobs:
         with:
           context: .
           push: true
-          tags: |
-            ghcr.io/econlabs/econlabs/jp-api:${{ steps.extract_version.outputs.version }}
-            ghcr.io/econlabs/econlabs/jp-api:latest
+          tags: ghcr.io/econlabs/econlabs/jp-api:testing
+          # Optionally, add more tags
+          # tags: |
+          #   ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:latest
+          #   ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:${{ github.sha }}
+        env:
+          GITHUB_OUTPUT: ${{ github.workspace }}/output.txt
+          GITHUB_STATE: ${{ github.workspace }}/state.txt
+
 
