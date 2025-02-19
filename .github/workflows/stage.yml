@@ -16,6 +16,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Install toml library
+        run: pip install toml
+
       - name: Extract version from pyproject.toml
         id: extract_version
         run: |
@@ -35,5 +38,6 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/econlabs/econlabs/jp-api:testing, ghcr.io/econlabs/econlabs/jp-api:${{ env.VERSION }}
+
 
 
