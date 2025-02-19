@@ -37,4 +37,3 @@ jobs:
           GITHUB_OUTPUT: ${{ github.workspace }}/output.txt
           GITHUB_STATE: ${{ github.workspace }}/state.txt
 
-
