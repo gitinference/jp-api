@@ -3,25 +3,28 @@ name: Staging Docker Image
 on:
   push:
     branches:
-      - 'main'
+      - main
 
 jobs:
-
   build:
-
-    runs-on: ubuntu-latest
-
+    runs-on: self-hosted
+    permissions:
+      contents: read
+      packages: write
     steps:
-    - uses: actions/checkout@v4
-      with:
-        submodules: 'true'
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Log in to Docker Hub
-      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag ouslan/jp-api:stage
-
-    - name: Push the Docker image
-      run: docker push ouslan/jp-api:stage
-
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/econlabs/econlabs/jp-api:stagging
