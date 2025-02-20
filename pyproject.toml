@@ -17,4 +17,5 @@ dependencies = [
   "sqlmodel>=0.0.22",
   "numpy>=2.2.2",
   "duckdb>=1.2.0",
+  "geopandas>=1.0.1",
 ]
