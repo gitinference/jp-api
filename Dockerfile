@@ -11,6 +11,6 @@ RUN pip install --no-cache-dir --upgrade -r ./requirements.txt
 
 EXPOSE 8000
 
-COPY ./src /app/
+COPY . .
 
-CMD ["fastapi", "run", "main.py", "--port", "8000"]
+CMD ["fastapi", "run", "src/main.py", "--port", "8000"]

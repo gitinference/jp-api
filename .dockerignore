@@ -17,6 +17,8 @@ notebooks/
 *.sqlite
 *.sqlite3
 *.dbf
+*.ddb
+*.wal
 *.db-journal
 
 # Ignore Python bytecode files
