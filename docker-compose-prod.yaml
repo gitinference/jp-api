@@ -35,7 +35,7 @@ services:
 
   api:
     container_name: FastAPI
-    image: ouslan/jp-api:staging
+    image: ghcr.io/econlabs/econlabs/jp-api:stagging
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
     restart: always
