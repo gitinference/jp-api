@@ -1,4 +1,4 @@
-name: Production Docker Image
+name: Staging Docker Image
 
 on:
   push:
@@ -27,4 +27,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/econlabs/econlabs/jp-api:production
+          tags: ghcr.io/gitinference/gitinference/jp-api:stagging
