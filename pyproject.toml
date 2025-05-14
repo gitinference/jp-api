@@ -12,11 +12,11 @@ dependencies = [
   "python-dotenv>=1.0.1",
   "tqdm>=4.67.1",
   "requests>=2.32.3",
-  "ibis-framework[duckdb,geospatial]>=9.5.0",
   "fastexcel>=0.12.1",
   "sqlmodel>=0.0.22",
   "numpy>=2.2.2",
   "duckdb>=1.2.0",
   "geopandas>=1.0.1",
   "altair[all]>=5.5.0",
+  "comtradeapicall>=1.2.1",
 ]
