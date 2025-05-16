@@ -1,0 +1,12 @@
+[submodule "src/submodules/jp_imports"]
+	path = src/submodules/jp_imports
+	url = https://github.com/gitinference/jp-imports.git
+[submodule "src/submodules/jp_index"]
+	path = src/submodules/jp_index
+	url = https://github.com/gitinference/jp-index.git
+[submodule "src/submodules/jp_qcew"]
+	path = src/submodules/jp_qcew
+	url = https://github.com/gitinference/jp-qcew.git
+[submodule "src/submodules/jp_forms"]
+	path = src/submodules/jp_forms
+	url = https://github.com/gitinference/jp-forms.git
