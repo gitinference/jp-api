@@ -2,6 +2,7 @@ from fastapi import APIRouter
 from ..submodules.jp_imports.src.data.data_process import DataTrade
 # from ..submodules.jp_index.src.data.data_process import DataIndex
 import numpy as np
+import polars as pl
 import os
 
 router = APIRouter()
@@ -30,16 +31,10 @@ async def get_jp_data(
 @router.get("/data/trade/jp/hts_codes/")
 async def get_data():
     df = dt.process_int_jp(level_filter="", level="hts", time_frame="yearly")
-    df = df.mutate(
-        hts_code_first2=df.hts_code.substr(0, 2)
+    df = df.with_columns(
+        hts_code_first2=pl.col("hts_code").str.slice(0,2)
     )  # Extraer las primeras dos posiciones
-    unique_first2_codes_df = df.select(df.hts_code_first2).distinct()  # Valores únicos
-    unique_first2_codes = (
-        unique_first2_codes_df.execute()["hts_code_first2"]
-        .dropna()
-        .sort_values()
-        .to_list()
-    )
+    unique_first2_codes = df.select(pl.col("hts_code_first2").unique()).to_series().to_list()
     return {"hts_code_first2": unique_first2_codes}
 
 
