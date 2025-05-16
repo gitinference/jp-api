@@ -59,7 +59,7 @@ async def get_org_data(
 @router.get("/data/trade/moving/")
 async def get_moving_data():
     df = dt.process_price()
-    df.to_parquet(os.path.join(os.getcwd(), "data", "processed", "moving.parquet"))
+    df.write_parquet(f"data/processed/moving.parquet")
     return df.to_pandas().replace([np.nan, np.inf, -np.inf], [0, 0, 0]).to_dict()
 
 
