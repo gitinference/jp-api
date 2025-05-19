@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
 from ..submodules.jp_imports.src.data.data_process import DataTrade
+
 # from ..submodules.jp_index.src.data.data_process import DataIndex
 import os
 
@@ -25,7 +26,7 @@ async def get_trade_file(
         level_filter=level_filter,
     )
     file_path = os.path.join(os.getcwd(), "data", f"{time_frame}_{level}.csv")
-    df.to_csv(file_path)
+    df.write_csv(file_path)
     return FileResponse(
         file_path, media_type="text/csv", filename=f"{time_frame}_{level}.csv"
     )
@@ -50,7 +51,7 @@ async def get_org_file(
         group=group,
         level_filter=level_filter,
     )
-    df.to_csv(file_path)
+    df.write_csv(file_path)
     return FileResponse(
         file_path, media_type="text/csv", filename=f"{time_frame}_{level_filter}.csv"
     )
@@ -62,7 +63,7 @@ async def get_moving_file():
 
     if not os.path.exists(os.path.join(os.getcwd(), "data", "processed", "moving.csv")):
         df = dt.process_price()
-        df.to_csv(file_path)
+        df.write_csv(file_path)
     return FileResponse(file_path, media_type="text/csv", filename="moving.csv")
 
 
@@ -73,11 +74,11 @@ async def get_moving_file():
 #         os.getcwd(), "data", "consumer.csv"
 #     df.to_csv(file_path)
 #     return FileResponse(file_path, media_type="text/csv", filename="consumer.csv")
-# 
-# 
+#
+#
 # @router.get("/files/index/jp_index")
 # async def get_jp_index_file(update: bool = False):
 #     df = di.process_jp_index(update)
 #     file_path = os.path.join(os.getcwd(), "data", "jp_index.csv")
-#     df.to_csv(file_path)
+#     df.write_csv(file_path)
 #     return FileResponse(file_path, media_type="text/csv", filename="jp_index.csv")
