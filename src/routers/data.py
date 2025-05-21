@@ -59,12 +59,17 @@ async def get_org_data(
     )
     return df.to_pandas().to_dict()
 
-
-@router.get("/data/index/indicatores")
+@router.get("/data/trade/indicators/")
 async def get_inicator(time_frame: str):
     match time_frame:
         case "yearly":
             df = pd.read_parquet("data/processed/indicadores_anuales.parquet")
+            return df.replace([np.nan, np.inf, -np.inf], [0, 0, 0]).to_dict()
+        case "monthly":
+            df = pd.read_parquet("data/processed/indicadores_economicos.parquet")
+            return df.replace([np.nan, np.inf, -np.inf], [0, 0, 0]).to_dict()
+        case "qrt":
+            df = pd.read_parquet("data/processed/indicadores_trimestrales.parquet")
             return df.replace([np.nan, np.inf, -np.inf], [0, 0, 0]).to_dict()
         case _:
             return {"error": "invalid timeframe"}
