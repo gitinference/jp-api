@@ -1,5 +1,7 @@
 from fastapi import APIRouter
+import pandas as pd
 from ..submodules.jp_imports.src.data.data_process import DataTrade
+
 # from ..submodules.jp_index.src.data.data_process import DataIndex
 import numpy as np
 import polars as pl
@@ -32,9 +34,11 @@ async def get_jp_data(
 async def get_data():
     df = dt.process_int_jp(level_filter="", level="hts", time_frame="yearly")
     df = df.with_columns(
-        hts_code_first2=pl.col("hts_code").str.slice(0,2)
+        hts_code_first2=pl.col("hts_code").str.slice(0, 2)
     )  # Extraer las primeras dos posiciones
-    unique_first2_codes = df.select(pl.col("hts_code_first2").unique()).to_series().to_list()
+    unique_first2_codes = (
+        df.select(pl.col("hts_code_first2").unique()).to_series().to_list()
+    )
     return {"hts_code_first2": unique_first2_codes}
 
 
@@ -55,19 +59,34 @@ async def get_org_data(
     )
     return df.to_pandas().to_dict()
 
+@router.get("/data/trade/indicators/")
+async def get_inicator(time_frame: str):
+    match time_frame:
+        case "yearly":
+            df = pd.read_parquet("data/processed/indicadores_anuales.parquet")
+            return df.replace([np.nan, np.inf, -np.inf], [0, 0, 0]).to_dict()
+        case "monthly":
+            df = pd.read_parquet("data/processed/indicadores_economicos.parquet")
+            return df.replace([np.nan, np.inf, -np.inf], [0, 0, 0]).to_dict()
+        case "qrt":
+            df = pd.read_parquet("data/processed/indicadores_trimestrales.parquet")
+            return df.replace([np.nan, np.inf, -np.inf], [0, 0, 0]).to_dict()
+        case _:
+            return {"error": "invalid timeframe"}
+
 
 @router.get("/data/trade/moving/")
 async def get_moving_data():
     df = dt.process_price()
-    df.write_parquet(f"data/processed/moving.parquet")
+    df.write_parquet("data/processed/moving.parquet")
     return df.to_pandas().replace([np.nan, np.inf, -np.inf], [0, 0, 0]).to_dict()
 
 
 # @router.get("/data/index/consumer")
 # async def get_consumer(update: bool = False):
 #     return di.process_consumer(update).to_pandas().to_dict()
-# 
-# 
+#
+#
 # @router.get("/data/index/jp_index")
 # async def get_jp_index(update: bool = False):
 #     return (
