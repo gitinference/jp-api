@@ -1,13 +1,14 @@
+import os
+
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
-from ..submodules.jp_imports.src.data.data_process import DataTrade
 
-# from ..submodules.jp_index.src.data.data_process import DataIndex
-import os
+from ..submodules.jp_imports.src.data.data_process import DataTrade
+from ..submodules.jp_index.src.data.data_process import DataIndex
 
 router = APIRouter()
 dt = DataTrade(database_file="data/data.ddb")
-# di = DataIndex(database_file="data/data.ddb")
+di = DataIndex(database_file="data/data.ddb")
 
 
 @router.get("/files/trade/jp/")
@@ -56,23 +57,24 @@ async def get_org_file(
         file_path, media_type="text/csv", filename=f"{time_frame}_{level_filter}.csv"
     )
 
-@router.get("/files/trade/indicators/")
+
+@router.get("/files/index/indicators/")
 async def get_indicators_file(
     time_frame: str,
 ):
-    file_path = os.path.join(
-        os.getcwd(), "data", "processed", f"indicators_{time_frame}_{level}.csv"
-    )
+    try:
+        file_path = os.path.join(
+            os.getcwd(), "data", "processed", f"jp_indicators_{time_frame}.csv"
+        )
+        df = di.jp_indicator_data(time_frame=time_frame)
+        df.write_csv(file_path)
+        return FileResponse(
+            file_path, media_type="text/csv", filename=f"jp_indicators_{time_frame}.csv"
+        )
+    except ValueError:
+        return {"error": "invalid timeframe"}
 
-    df = dt.process_int_indicators(
-        time_frame=time_frame,
-    )
-    df.write_csv(file_path)
-    return FileResponse(
-        file_path, media_type="text/csv", filename=f"{time_frame}.csv"
-    )
-    
-    
+
 @router.get("/files/trade/moving")
 async def get_moving_file():
     file_path = os.path.join(os.getcwd(), "data", "processed", "moving.csv")
