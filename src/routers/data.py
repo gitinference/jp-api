@@ -1,15 +1,14 @@
-from fastapi import APIRouter
-import pandas as pd
-from ..submodules.jp_imports.src.data.data_process import DataTrade
-
-# from ..submodules.jp_index.src.data.data_process import DataIndex
 import numpy as np
+import pandas as pd
 import polars as pl
-import os
+from fastapi import APIRouter
+
+from ..submodules.jp_imports.src.data.data_process import DataTrade
+from ..submodules.jp_index.src.data.data_process import DataIndex
 
 router = APIRouter()
 dt = DataTrade(database_file="data/data.ddb")
-# di = DataIndex(database_file="data/data.ddb")
+di = DataIndex(database_file="data/data.ddb")
 
 
 @router.get("/data/trade/jp/")
@@ -59,20 +58,14 @@ async def get_org_data(
     )
     return df.to_pandas().to_dict()
 
-@router.get("/data/trade/indicators/")
+
+@router.get("/data/index/indicators/")
 async def get_inicator(time_frame: str):
-    match time_frame:
-        case "yearly":
-            df = pd.read_parquet("data/processed/indicadores_anuales.parquet")
-            return df.replace([np.nan, np.inf, -np.inf], [0, 0, 0]).to_dict()
-        case "monthly":
-            df = pd.read_parquet("data/processed/indicadores_economicos.parquet")
-            return df.replace([np.nan, np.inf, -np.inf], [0, 0, 0]).to_dict()
-        case "qrt":
-            df = pd.read_parquet("data/processed/indicadores_trimestrales.parquet")
-            return df.replace([np.nan, np.inf, -np.inf], [0, 0, 0]).to_dict()
-        case _:
-            return {"error": "invalid timeframe"}
+    try:
+        df = di.jp_indicator_data(time_frame=time_frame)
+        return df.to_pandas().replace([np.nan, np.inf, -np.inf], [0, 0, 0]).to_dict()
+    except ValueError:
+        return {"error": "invalid timeframe"}
 
 
 @router.get("/data/trade/moving/")
