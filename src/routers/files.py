@@ -1,6 +1,10 @@
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
 from ..submodules.jp_imports.src.data.data_process import DataTrade
+import pandas as pd
+import io
+from fastapi.responses import StreamingResponse
+from .data import get_indicators_dict
 
 # from ..submodules.jp_index.src.data.data_process import DataIndex
 import os
@@ -8,7 +12,6 @@ import os
 router = APIRouter()
 dt = DataTrade(database_file="data/data.ddb")
 # di = DataIndex(database_file="data/data.ddb")
-
 
 @router.get("/files/trade/jp/")
 async def get_trade_file(
@@ -57,19 +60,22 @@ async def get_org_file(
     )
 
 @router.get("/files/trade/indicators/")
-async def get_indicators_file(
-    time_frame: str,
-):
-    file_path = os.path.join(
-        os.getcwd(), "data", "processed", f"indicators_{time_frame}_{level}.csv"
-    )
-
-    df = dt.process_int_indicators(
-        time_frame=time_frame,
-    )
-    df.write_csv(file_path)
-    return FileResponse(
-        file_path, media_type="text/csv", filename=f"{time_frame}.csv"
+async def get_indicators_file(time_frame: str):
+    data = get_indicators_dict(time_frame)
+    if isinstance(data, dict) and "error" in data:
+        return data  # Retorna el error como JSON
+    
+    # Convierte la lista de dicts en DataFrame
+    df = pd.DataFrame(data)
+    # Exporta el DataFrame a CSV en memoria
+    stream = io.StringIO()
+    df.to_csv(stream, index=False)
+    stream.seek(0)
+    # Retorna el archivo CSV para descarga
+    return StreamingResponse(
+        stream,
+        media_type="text/csv",
+        headers={"Content-Disposition": f"attachment; filename={time_frame}.csv"}
     )
     
     
