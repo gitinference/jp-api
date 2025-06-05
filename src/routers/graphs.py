@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-# from ..submodules.jp_qcew.src.visualization.graph import graphGenerator
-from ..submodules.jp_imports.src.graphs.graphs import DataGraph
+from submodules.jp_qcew.src.visualization.graph import graphGenerator
+from submodules.jp_imports.src.graphs.graphs import DataGraph
 
 router = APIRouter()
 
@@ -81,3 +81,12 @@ async def get_hts_ranking_graph():
             "import_top": graphs['import_top'].to_html(),
             "import_bottom": graphs['import_bottom'].to_html()
         }
+
+@router.get("/graph/naics/")
+async def get_naics_graph(
+    naics_code: str,
+):
+    graph, context = graphGenerator().gen_naics_graph(
+        naics_code=naics_code,
+    )
+    return graph.to_html(), context
