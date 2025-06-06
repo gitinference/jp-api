@@ -1,6 +1,7 @@
 from fastapi import APIRouter
-from submodules.jp_qcew.src.visualization.graph import graphGenerator
-from submodules.jp_imports.src.graphs.graphs import DataGraph
+from ..submodules.jp_qcew.src.visualization.graph import graphGenerator
+from ..submodules.jp_imports.src.graphs.graphs import DataGraph
+from ..submodules.jp_index.src.graphs import DataGraph as IndexDataGraph
 
 router = APIRouter()
 
@@ -90,3 +91,12 @@ async def get_naics_graph(
         naics_code=naics_code,
     )
     return graph.to_html(), context
+
+@router.get("/graph/indicadores/")
+async def get_indicadores_graph(
+    time_frame: str,
+):
+    graph = IndexDataGraph().create_indicators_graph(
+        time_frame=time_frame,
+    )
+    return graph.to_html()
