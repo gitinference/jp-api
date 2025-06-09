@@ -52,7 +52,7 @@ async def get_imports_exports_graph(
         )
     else:
         raise ValueError("Invalid type specified. Use 'imports' or 'exports'.")
-    return graph.to_html(full_html=False, default_height=500, default_width=700)
+    return graph.to_html(fullhtml=False)
 
 @router.get("/graph/product-hts/")
 async def get_product_hts_graph(
