@@ -19,6 +19,8 @@ arro3-core==0.4.6
     # via vegafusion
 asttokens==3.0.0
     # via stack-data
+atpublic==6.0.1
+    # via ibis-framework
 attrs==25.3.0
     # via
     #   jsonschema
@@ -47,7 +49,9 @@ decorator==5.2.1
 dnspython==2.7.0
     # via email-validator
 duckdb==1.2.2
-    # via jp-api (pyproject.toml)
+    # via
+    #   jp-api (pyproject.toml)
+    #   ibis-framework
 email-validator==2.2.0
     # via fastapi
 executing==2.2.0
@@ -72,6 +76,8 @@ httptools==0.6.4
     # via uvicorn
 httpx==0.28.1
     # via fastapi
+ibis-framework==10.5.0
+    # via jp-api (pyproject.toml)
 idna==3.10
     # via
     #   anyio
@@ -115,6 +121,7 @@ numpy==2.2.5
     #   jp-api (pyproject.toml)
     #   altair
     #   geopandas
+    #   ibis-framework
     #   pandas
     #   pyogrio
     #   shapely
@@ -122,6 +129,7 @@ packaging==25.0
     # via
     #   altair
     #   geopandas
+    #   ibis-framework
     #   pyogrio
     #   vegafusion
 pandas==2.2.3
@@ -129,9 +137,12 @@ pandas==2.2.3
     #   jp-api (pyproject.toml)
     #   altair
     #   geopandas
+    #   ibis-framework
     #   vega-datasets
 parso==0.8.4
     # via jedi
+parsy==2.1
+    # via ibis-framework
 pexpect==4.9.0
     # via ipython
 polars==1.29.0
@@ -148,6 +159,9 @@ pyarrow==20.0.0
     # via
     #   altair
     #   fastexcel
+    #   ibis-framework
+pyarrow-hotfix==0.7
+    # via ibis-framework
 pydantic==2.11.4
     # via
     #   fastapi
@@ -164,7 +178,9 @@ pyogrio==0.11.0
 pyproj==3.7.1
     # via geopandas
 python-dateutil==2.9.0.post0
-    # via pandas
+    # via
+    #   ibis-framework
+    #   pandas
 python-dotenv==1.1.0
     # via
     #   jp-api (pyproject.toml)
@@ -183,6 +199,7 @@ requests==2.32.3
     # via jp-api (pyproject.toml)
 rich==14.0.0
     # via
+    #   ibis-framework
     #   rich-toolkit
     #   typer
 rich-toolkit==0.14.6
@@ -201,12 +218,16 @@ sniffio==1.3.1
     # via anyio
 sqlalchemy==2.0.41
     # via sqlmodel
+sqlglot==26.25.3
+    # via ibis-framework
 sqlmodel==0.0.24
     # via jp-api (pyproject.toml)
 stack-data==0.6.3
     # via ipython
 starlette==0.46.2
     # via fastapi
+toolz==1.0.0
+    # via ibis-framework
 tqdm==4.67.1
     # via jp-api (pyproject.toml)
 traitlets==5.14.3
@@ -223,6 +244,7 @@ typing-extensions==4.13.2
     #   anyio
     #   anywidget
     #   fastapi
+    #   ibis-framework
     #   pydantic
     #   pydantic-core
     #   referencing
@@ -233,7 +255,9 @@ typing-extensions==4.13.2
 typing-inspection==0.4.0
     # via pydantic
 tzdata==2025.2
-    # via pandas
+    # via
+    #   ibis-framework
+    #   pandas
 urllib3==2.4.0
     # via requests
 uvicorn==0.34.2
