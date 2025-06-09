@@ -52,7 +52,12 @@ async def get_imports_exports_graph(
         )
     else:
         raise ValueError("Invalid type specified. Use 'imports' or 'exports'.")
-    return graph.to_html(fullhtml=False)
+    return graph.to_html(
+        fullhtml=False,
+        include_vega=False,
+        include_vegalite=False,
+        include_vegaembed=False
+    )
 
 @router.get("/graph/product-hts/")
 async def get_product_hts_graph(
@@ -77,10 +82,30 @@ async def get_product_hts_graph(
 async def get_hts_ranking_graph():
     graphs = DataGraph().gen_hts_ranking_chart()
     return {
-            "export_top": graphs['export_top'].to_html(fullhtml=False),
-            "export_bottom": graphs['export_bottom'].to_html(fullhtml=False),
-            "import_top": graphs['import_top'].to_html(fullhtml=False),
-            "import_bottom": graphs['import_bottom'].to_html(fullhtml=False)
+            "export_top": graphs['export_top'].to_html(
+                fullhtml=False,
+                include_vega=False,
+                include_vegalite=False,
+                include_vegaembed=False
+            ),
+            "export_bottom": graphs['export_bottom'].to_html(
+                fullhtml=False,
+                include_vega=False,
+                include_vegalite=False,
+                include_vegaembed=False
+            ),
+            "import_top": graphs['import_top'].to_html(
+                fullhtml=False,
+                include_vega=False,
+                include_vegalite=False,
+                include_vegaembed=False
+            ),
+            "import_bottom": graphs['import_bottom'].to_html(
+                fullhtml=False,
+                include_vega=False,
+                include_vegalite=False,
+                include_vegaembed=False
+            )
         }
 
 @router.get("/graph/naics/")
