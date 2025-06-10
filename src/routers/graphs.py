@@ -52,7 +52,7 @@ async def get_imports_exports_graph(
         )
     else:
         raise ValueError("Invalid type specified. Use 'imports' or 'exports'.")
-    return graph.to_html(fullhtml=False)
+    return graph.to_html(fullhtml=False, output_div=type)
 
 @router.get("/graph/product-hts/")
 async def get_product_hts_graph(
@@ -71,36 +71,16 @@ async def get_product_hts_graph(
         frequency=time_frame,
         trade_type=trade_type
     )
-    return graph.to_html(fullhtml=False), context
+    return graph.to_html(), context
 
 @router.get("/graph/product-ranking/")
 async def get_hts_ranking_graph():
     graphs = DataGraph().gen_hts_ranking_chart()
     return {
-            "export_top": graphs['export_top'].to_html(
-                fullhtml=False,
-                include_vega=False,
-                include_vegalite=False,
-                include_vegaembed=False
-            ),
-            "export_bottom": graphs['export_bottom'].to_html(
-                fullhtml=False,
-                include_vega=False,
-                include_vegalite=False,
-                include_vegaembed=False
-            ),
-            "import_top": graphs['import_top'].to_html(
-                fullhtml=False,
-                include_vega=False,
-                include_vegalite=False,
-                include_vegaembed=False
-            ),
-            "import_bottom": graphs['import_bottom'].to_html(
-                fullhtml=False,
-                include_vega=False,
-                include_vegalite=False,
-                include_vegaembed=False
-            )
+            "export_top": graphs['export_top'].to_html(fullhtml=False, output_div='export_top'),
+            "export_bottom": graphs['export_bottom'].to_html(fullhtml=False, output_div='export_bottom'),
+            "import_top": graphs['import_top'].to_html(fullhtml=False, output_div='import_top'),
+            "import_bottom": graphs['import_bottom'].to_html(fullhtml=False, output_div='import_bottom'),
         }
 
 @router.get("/graph/naics/")
@@ -110,7 +90,7 @@ async def get_naics_graph(
     graph, context = graphGenerator().gen_naics_graph(
         naics_code=naics_code,
     )
-    return graph.to_html(fullhtml=False), context
+    return graph.to_html(), context
 
 @router.get("/graph/indicadores/")
 async def get_indicadores_graph(
@@ -119,4 +99,4 @@ async def get_indicadores_graph(
     graph = IndexDataGraph().create_indicators_graph(
         time_frame=time_frame,
     )
-    return graph.to_html(fullhtml=False)
+    return graph.to_html()
