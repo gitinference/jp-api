@@ -100,3 +100,12 @@ async def get_indicadores_graph(
         time_frame=time_frame,
     )
     return graph.to_html()
+
+@router.get("/graph/consumer/")
+async def get_consumer_graph(
+    time_frame: str,
+):
+    graph = IndexDataGraph().create_consumer_graph(
+        time_frame=time_frame,
+    )
+    return graph.to_html()
