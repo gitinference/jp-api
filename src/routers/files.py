@@ -84,7 +84,7 @@ async def get_qcew_employment_file(
         file_path = os.path.join(
             os.getcwd(), "data", "processed", f"qcew_employment_{time_frame}.csv"
         )
-        df = dc.get_naics_data(naics_code=time_frame)
+        df, naics = dc.get_naics_data(naics_code=time_frame)
         df.write_csv(file_path)
         return FileResponse(
             file_path, media_type="text/csv", filename=f"qcew_employment_{time_frame}.csv"
