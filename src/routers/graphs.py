@@ -117,13 +117,17 @@ async def get_awards_category_graph(
     third_dropdown: str,
     time_frame: str,
 ):
-    graph, context = IndexDataGraph().create_spending_by_category_graph(
+    graph, categories = IndexDataGraph().create_spending_by_category_graph(
         year=dropdown,
         quarter=second_dropdown,
         month=second_dropdown,
         type=time_frame,
         category=third_dropdown
     )
+
+    context = {
+        'categories': categories,
+    }
 
     return graph.to_html(fullhtml=False, output_div=type), context
 
@@ -132,9 +136,13 @@ async def get_awards_secter_graph(
     dropdown: str,
     time_frame: str,
 ):
-    graph, context = IndexDataGraph().create_secter_graph(
+    graph, agencies = IndexDataGraph().create_secter_graph(
         type=time_frame,
         secter=dropdown,
     )
+
+    context = {
+        'agencies': agencies,
+    }
 
     return graph.to_html(fullhtml=False, output_div=type), context
