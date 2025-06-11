@@ -5,10 +5,12 @@ from fastapi.responses import FileResponse
 
 from ..submodules.jp_imports.src.data.data_process import DataTrade
 from ..submodules.jp_index.src.data.data_process import DataIndex
+from ..submodules.jp_qcew.src.data.data_process import cleanData
 
 router = APIRouter()
 dt = DataTrade(database_file="data/data.ddb")
 di = DataIndex(database_file="data/data.ddb")
+dc = cleanData(database_file="data/data.ddb")
 
 
 @router.get("/files/trade/jp/")
@@ -70,6 +72,22 @@ async def get_indicators_file(
         df.write_csv(file_path)
         return FileResponse(
             file_path, media_type="text/csv", filename=f"jp_indicators_{time_frame}.csv"
+        )
+    except ValueError:
+        return {"error": "invalid timeframe"}
+    
+@router.get("/files/qcew/employment/")
+async def get_qcew_employment_file(
+    time_frame: str,
+):
+    try:
+        file_path = os.path.join(
+            os.getcwd(), "data", "processed", f"qcew_employment_{time_frame}.csv"
+        )
+        df = dc.get_naics_data(naics_code=time_frame)
+        df.write_csv(file_path)
+        return FileResponse(
+            file_path, media_type="text/csv", filename=f"qcew_employment_{time_frame}.csv"
         )
     except ValueError:
         return {"error": "invalid timeframe"}
