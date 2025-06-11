@@ -129,7 +129,7 @@ async def get_awards_category_graph(
         'categories': categories,
     }
 
-    return graph.to_html(fullhtml=False, output_div=type), context
+    return graph.to_html(fullhtml=False, output_div='category'), context
 
 @router.get("/graph/awards/secter")
 async def get_awards_secter_graph(
@@ -145,4 +145,4 @@ async def get_awards_secter_graph(
         'agencies': agencies,
     }
 
-    return graph.to_html(fullhtml=False, output_div=type), context
+    return graph.to_html(fullhtml=False, output_div='secter'), context
