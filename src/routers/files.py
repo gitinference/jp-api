@@ -73,6 +73,22 @@ async def get_indicators_file(
         )
     except ValueError:
         return {"error": "invalid timeframe"}
+    
+@router.get("/files/index/consumer_index/")
+async def get_consumer_file(
+    time_frame: str,
+):
+    try:
+        file_path = os.path.join(
+            os.getcwd(), "data", "processed", f"consumer_index_{time_frame}.csv"
+        )
+        df = di.consumer_data(time_frame=time_frame)
+        df.write_csv(file_path)
+        return FileResponse(
+            file_path, media_type="text/csv", filename=f"consumer_index_{time_frame}.csv"
+        )
+    except ValueError:
+        return {"error": "invalid timeframe"}
 
 
 @router.get("/files/trade/moving")
