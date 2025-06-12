@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import polars as pl
+from datetime import date
 from fastapi import APIRouter
 
 from ..submodules.jp_imports.src.data.data_process import DataTrade
@@ -74,6 +75,13 @@ async def get_moving_data():
     df.write_parquet("data/processed/moving.parquet")
     return df.to_pandas().replace([np.nan, np.inf, -np.inf], [0, 0, 0]).to_dict()
 
+@router.get("/data/index/awards/")
+async def get_awards_data():
+    current_year = date.today().year
+
+    for year in range(2008, current_year + 1):
+        df = di.insert_awards_by_year(year)
+    return df
 
 # @router.get("/data/index/consumer")
 # async def get_consumer(update: bool = False):

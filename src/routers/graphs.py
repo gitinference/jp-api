@@ -109,3 +109,40 @@ async def get_consumer_graph(
         time_frame=time_frame,
     )
     return graph.to_html()
+
+@router.get("/graph/awards/category")
+async def get_awards_category_graph(
+    dropdown: int,
+    second_dropdown: int,
+    third_dropdown: str,
+    time_frame: str,
+):
+    graph, categories = IndexDataGraph().create_spending_by_category_graph(
+        year=dropdown,
+        quarter=second_dropdown,
+        month=second_dropdown,
+        type=time_frame,
+        category=third_dropdown
+    )
+
+    context = {
+        'categories': categories,
+    }
+
+    return graph.to_html(fullhtml=False, output_div='category'), context
+
+@router.get("/graph/awards/secter")
+async def get_awards_secter_graph(
+    dropdown: str,
+    time_frame: str,
+):
+    graph, agencies = IndexDataGraph().create_secter_graph(
+        type=time_frame,
+        secter=dropdown,
+    )
+
+    context = {
+        'agencies': agencies,
+    }
+
+    return graph.to_html(fullhtml=False, output_div='secter'), context

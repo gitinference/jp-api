@@ -118,6 +118,31 @@ async def get_moving_file():
         df.write_csv(file_path)
     return FileResponse(file_path, media_type="text/csv", filename="moving.csv")
 
+@router.get("/files/index/awards/secter")
+async def get_awards_secter_file(
+    time_frame: str,
+    agency: str
+):
+    file_path = os.path.join(os.getcwd(), "data", "processed", "awards_secter.csv")
+
+    if not os.path.exists(os.path.join(os.getcwd(), "data", "processed", "awards_secter.csv")):
+        df = di.process_awards_by_secter(time_frame, agency)[0]
+        df.write_csv(file_path)
+    return FileResponse(file_path, media_type="text/csv", filename="awards_secter.csv")
+
+@router.get("/files/index/awards/category")
+async def get_awards_category_file(
+    dropdown: int,
+    second_dropdown: int,
+    third_dropdown: str,
+    time_frame: str,
+):
+    file_path = os.path.join(os.getcwd(), "data", "processed", "awards_category.csv")
+
+    if not os.path.exists(os.path.join(os.getcwd(), "data", "processed", "awards_category.csv")):
+        df = di.process_awards_by_category(dropdown, second_dropdown, second_dropdown, time_frame, third_dropdown)[0]
+        df.write_csv(file_path)
+    return FileResponse(file_path, media_type="text/csv", filename="awards_category.csv")
 
 # @router.get("/files/index/consumer")
 # async def get_consumer_file(update: bool = False):
