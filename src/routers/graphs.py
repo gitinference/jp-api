@@ -110,6 +110,17 @@ async def get_consumer_graph(
     )
     return graph.to_html()
 
+@router.get("/graph/energia/")
+async def get_energy_graph(
+    period: str = "monthly",
+    metric: str = "generacion_neta_mkwh"
+):
+    graph = IndexDataGraph().create_energy_chart(
+        period=period,
+        metric=metric
+    )
+    return graph.to_html()
+
 @router.get("/graph/awards/category")
 async def get_awards_category_graph(
     dropdown: int,
