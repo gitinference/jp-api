@@ -144,6 +144,18 @@ async def get_awards_category_file(
         df.write_csv(file_path)
     return FileResponse(file_path, media_type="text/csv", filename="awards_category.csv")
 
+@router.get("/files/index/energy/")
+async def get_energy_file(
+    time_frame: str = "",
+    level: str = "",
+):
+    file_path = os.path.join(os.getcwd(), "data", "processed", "energy.csv")
+
+    if not os.path.exists(os.path.join(os.getcwd(), "data", "processed", "energy.csv")):
+        df = di.process_energy_data(time_frame, level)
+        df.write_csv(file_path)
+    return FileResponse(file_path, media_type="text/csv", filename="energy.csv")
+
 # @router.get("/files/index/consumer")
 # async def get_consumer_file(update: bool = False):
 #     df = di.process_consumer(update)
