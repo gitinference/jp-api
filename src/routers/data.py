@@ -77,11 +77,14 @@ async def get_moving_data():
 
 @router.get("/data/index/awards/")
 async def get_awards_data():
-    current_year = date.today().year
+    try:
+        current_year = date.today().year
 
-    for year in range(2008, current_year + 1):
-        df = di.insert_awards_by_year(year)
-    return df
+        for year in range(2008, current_year + 1):
+            di.insert_awards_by_year(year)
+        return None
+    except ValueError:
+        return {"error": "falied to process awards data"}
 
 # @router.get("/data/index/consumer")
 # async def get_consumer(update: bool = False):
