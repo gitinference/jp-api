@@ -95,11 +95,18 @@ async def get_naics_graph(
 @router.get("/graph/indicadores/")
 async def get_indicadores_graph(
     time_frame: str,
+    column: str,
 ):
-    graph = IndexDataGraph().create_indicators_graph(
+    graph, columns = IndexDataGraph().create_indicators_graph(
         time_frame=time_frame,
+        column=column,
     )
-    return graph.to_html()
+
+    context = {
+        'columns': columns,
+    }
+
+    return graph.to_html(), context
 
 @router.get("/graph/consumer/")
 async def get_consumer_graph(
