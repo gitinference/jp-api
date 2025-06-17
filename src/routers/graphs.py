@@ -111,11 +111,18 @@ async def get_indicadores_graph(
 @router.get("/graph/consumer/")
 async def get_consumer_graph(
     time_frame: str,
+    column: str
 ):
-    graph = IndexDataGraph().create_consumer_graph(
+    graph, columns = IndexDataGraph().create_consumer_graph(
         time_frame=time_frame,
+        column=column,
     )
-    return graph.to_html(fullhtml=False, output_div='indices_consumidor')
+
+    context = {
+        'columns': columns,
+    }
+
+    return graph.to_html(fullhtml=False, output_div='indices_consumidor'), context
 
 @router.get("/graph/energia/")
 async def get_energy_graph(
