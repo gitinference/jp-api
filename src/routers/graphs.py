@@ -52,7 +52,7 @@ async def get_imports_exports_graph(
         )
     else:
         raise ValueError("Invalid type specified. Use 'imports' or 'exports'.")
-    return graph.to_html()
+    return graph.to_html(fullhtml=False, output_div=type)
 
 @router.get("/graph/product-hts/")
 async def get_product_hts_graph(
@@ -77,10 +77,10 @@ async def get_product_hts_graph(
 async def get_hts_ranking_graph():
     graphs = DataGraph().gen_hts_ranking_chart()
     return {
-            "export_top": graphs['export_top'].to_html(),
-            "export_bottom": graphs['export_bottom'].to_html(),
-            "import_top": graphs['import_top'].to_html(),
-            "import_bottom": graphs['import_bottom'].to_html()
+            "export_top": graphs['export_top'].to_html(fullhtml=False, output_div='export_top'),
+            "export_bottom": graphs['export_bottom'].to_html(fullhtml=False, output_div='export_bottom'),
+            "import_top": graphs['import_top'].to_html(fullhtml=False, output_div='import_top'),
+            "import_bottom": graphs['import_bottom'].to_html(fullhtml=False, output_div='import_bottom'),
         }
 
 @router.get("/graph/naics/")
@@ -95,8 +95,104 @@ async def get_naics_graph(
 @router.get("/graph/indicadores/")
 async def get_indicadores_graph(
     time_frame: str,
+    column: str,
 ):
-    graph = IndexDataGraph().create_indicators_graph(
+    graph, columns = IndexDataGraph().create_indicators_graph(
         time_frame=time_frame,
+        column=column,
     )
-    return graph.to_html()
+
+    context = {
+        'columns': columns,
+    }
+
+    return graph.to_html(), context
+
+@router.get("/graph/consumer/")
+async def get_consumer_graph(
+    time_frame: str,
+    column: str,
+    data_type: str
+):
+    graph, columns = IndexDataGraph().create_consumer_graph(
+        time_frame=time_frame,
+        column=column,
+        data_type=data_type
+    )
+
+    context = {
+        'columns': columns,
+    }
+
+    return graph.to_html(fullhtml=False, output_div=f'{data_type}_indices_consumidor'), context
+
+@router.get("/graph/energia/")
+async def get_energy_graph(
+    period: str = "monthly",
+    metric: str = "generacion_neta_mkwh"
+):
+    graph, energy_metrics = IndexDataGraph().create_energy_chart(
+        period=period,
+        metric=metric
+    )
+
+    context = {
+        'energy_metrics': energy_metrics,
+    }
+
+    return graph.to_html(fullhtml=False, output_div='energy'), context
+
+@router.get("/graph/awards/category")
+async def get_awards_category_graph(
+    dropdown: int,
+    second_dropdown: int,
+    third_dropdown: str,
+    time_frame: str,
+):
+    graph, categories = IndexDataGraph().create_spending_by_category_graph(
+        year=dropdown,
+        quarter=second_dropdown,
+        month=second_dropdown,
+        type=time_frame,
+        category=third_dropdown
+    )
+
+    context = {
+        'categories': categories,
+    }
+
+    return graph.to_html(fullhtml=False, output_div='category'), context
+
+@router.get("/graph/awards/secter")
+async def get_awards_secter_graph(
+    dropdown: str,
+    time_frame: str,
+):
+    graph, agencies = IndexDataGraph().create_secter_graph(
+        type=time_frame,
+        secter=dropdown,
+    )
+
+    context = {
+        'agencies': agencies,
+    }
+
+    return graph.to_html(fullhtml=False, output_div='secter'), context
+
+@router.get("/graph/indices/precios")
+async def get_indices_precios_graph(
+    time_frame: str,
+    data_type: str,
+    column: str,
+):
+    graph, columns = IndexDataGraph().create_price_index_graph(
+        time_frame=time_frame,
+        data_type=data_type,
+        column=column
+    )
+
+    context = {
+        'columns_2': columns,
+    }
+
+    return graph.to_html(fullhtml=False, output_div='indices_precios'), context
