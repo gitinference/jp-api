@@ -156,6 +156,18 @@ async def get_energy_file(
         df.write_csv(file_path)
     return FileResponse(file_path, media_type="text/csv", filename="energy.csv")
 
+@router.get("/files/index/indices/precios")
+async def get_indices_precios_file(
+    time_frame: str,
+    level: str,
+):
+    file_path = os.path.join(os.getcwd(), "data", "processed", f"{time_frame}_{level}_indices_precios.csv")
+
+    if not os.path.exists(os.path.join(os.getcwd(), "data", "processed", f"{time_frame}_{level}_indices_precios.csv")):
+        df = di.process_price_indexes(time_frame, level)
+        df.write_csv(file_path)
+    return FileResponse(file_path, media_type="text/csv", filename=f"{time_frame}_{level}_indices_precios.csv")
+
 # @router.get("/files/index/consumer")
 # async def get_consumer_file(update: bool = False):
 #     df = di.process_consumer(update)
