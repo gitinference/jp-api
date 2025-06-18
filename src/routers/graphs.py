@@ -122,11 +122,16 @@ async def get_energy_graph(
     period: str = "monthly",
     metric: str = "generacion_neta_mkwh"
 ):
-    graph = IndexDataGraph().create_energy_chart(
+    graph, energy_metrics = IndexDataGraph().create_energy_chart(
         period=period,
         metric=metric
     )
-    return graph.to_html()
+
+    context = {
+        'energy_metrics': energy_metrics,
+    }
+
+    return graph.to_html(fullhtml=False, output_div='energy'), context
 
 @router.get("/graph/awards/category")
 async def get_awards_category_graph(
