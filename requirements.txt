@@ -123,14 +123,18 @@ numpy==2.2.5
     #   geopandas
     #   ibis-framework
     #   pandas
+    #   patsy
     #   pyogrio
+    #   scipy
     #   shapely
+    #   statsmodels
 packaging==25.0
     # via
     #   altair
     #   geopandas
     #   ibis-framework
     #   pyogrio
+    #   statsmodels
     #   vegafusion
 pandas==2.2.3
     # via
@@ -138,11 +142,14 @@ pandas==2.2.3
     #   altair
     #   geopandas
     #   ibis-framework
+    #   statsmodels
     #   vega-datasets
 parso==0.8.4
     # via jedi
 parsy==2.1
     # via ibis-framework
+patsy==1.0.1
+    # via statsmodels
 pexpect==4.9.0
     # via ipython
 polars==1.29.0
@@ -195,7 +202,7 @@ referencing==0.36.2
     # via
     #   jsonschema
     #   jsonschema-specifications
-requests==2.32.3
+requests==2.32.4
     # via jp-api (pyproject.toml)
 rich==14.0.0
     # via
@@ -208,6 +215,8 @@ rpds-py==0.25.0
     # via
     #   jsonschema
     #   referencing
+scipy==1.15.3
+    # via statsmodels
 shapely==2.1.0
     # via geopandas
 shellingham==1.5.4
@@ -226,6 +235,8 @@ stack-data==0.6.3
     # via ipython
 starlette==0.46.2
     # via fastapi
+statsmodels==0.14.4
+    # via jp-api (pyproject.toml)
 toolz==1.0.0
     # via ibis-framework
 tqdm==4.67.1

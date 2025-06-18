@@ -11,7 +11,7 @@ dependencies = [
   "polars>=1.16.0",
   "python-dotenv>=1.0.1",
   "tqdm>=4.67.1",
-  "requests>=2.32.3",
+  "requests>=2.32.4",
   "fastexcel>=0.12.1",
   "sqlmodel>=0.0.22",
   "numpy>=2.2.2",
@@ -20,6 +20,7 @@ dependencies = [
   "altair[all]>=5.5.0",
   "comtradeapicall>=1.2.1",
   "ibis-framework[duckdb]>=10.5.0",
+  "statsmodels>=0.14.4",
 ]
 
 [dependency-groups]
