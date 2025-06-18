@@ -269,8 +269,10 @@ tzdata==2025.2
     # via
     #   ibis-framework
     #   pandas
-urllib3==2.4.0
-    # via requests
+urllib3==2.5.0
+    # via
+    #   jp-api (pyproject.toml)
+    #   requests
 uvicorn==0.34.2
     # via
     #   fastapi

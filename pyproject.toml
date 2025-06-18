@@ -21,6 +21,7 @@ dependencies = [
   "comtradeapicall>=1.2.1",
   "ibis-framework[duckdb]>=10.5.0",
   "statsmodels>=0.14.4",
+  "urllib3>=2.5.0",
 ]
 
 [dependency-groups]
