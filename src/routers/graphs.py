@@ -111,11 +111,18 @@ async def get_indicadores_graph(
 @router.get("/graph/consumer/")
 async def get_consumer_graph(
     time_frame: str,
+    column: str
 ):
-    graph = IndexDataGraph().create_consumer_graph(
+    graph, columns = IndexDataGraph().create_consumer_graph(
         time_frame=time_frame,
+        column=column,
     )
-    return graph.to_html()
+
+    context = {
+        'columns': columns,
+    }
+
+    return graph.to_html(fullhtml=False, output_div='indices_consumidor'), context
 
 @router.get("/graph/energia/")
 async def get_energy_graph(
@@ -169,3 +176,21 @@ async def get_awards_secter_graph(
     }
 
     return graph.to_html(fullhtml=False, output_div='secter'), context
+
+@router.get("/graph/indices/precios")
+async def get_indices_precios_graph(
+    time_frame: str,
+    data_type: str,
+    column: str,
+):
+    graph, columns = IndexDataGraph().create_price_index_graph(
+        time_frame=time_frame,
+        data_type=data_type,
+        column=column
+    )
+
+    context = {
+        'columns_2': columns,
+    }
+
+    return graph.to_html(fullhtml=False, output_div='indices_precios'), context
