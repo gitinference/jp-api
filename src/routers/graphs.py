@@ -28,7 +28,7 @@ async def get_imports_exports_graph(
     type: str = "",
 ):
     if type == "imports":
-        graph = DataGraph(database_file="data/data.ddb").gen_imports_chart(
+        graph, hts_codes = DataGraph(database_file="data/data.ddb").gen_imports_chart(
             level=level,
             time_frame=time_frame,
             agriculture_filter=agriculture_filter,
@@ -40,7 +40,7 @@ async def get_imports_exports_graph(
             third_dropdown=third_dropdown,
         )
     elif type == "exports":
-        graph = DataGraph(database_file="data/data.ddb").gen_exports_chart(
+        graph, hts_codes = DataGraph(database_file="data/data.ddb").gen_exports_chart(
             level=level,
             time_frame=time_frame,
             agriculture_filter=agriculture_filter,
@@ -53,7 +53,12 @@ async def get_imports_exports_graph(
         )
     else:
         raise ValueError("Invalid type specified. Use 'imports' or 'exports'.")
-    return graph.to_html(fullhtml=False, output_div=type)
+    
+    context = {
+        "hts_codes": hts_codes,
+    }
+    
+    return graph.to_html(fullhtml=False, output_div=f"{type}_{level_filter}"), context
 
 
 @router.get("/graph/product-hts/")
