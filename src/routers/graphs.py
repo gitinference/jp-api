@@ -131,7 +131,7 @@ async def get_consumer_graph(time_frame: str, column: str, data_type: str):
     ).create_consumer_graph(time_frame=time_frame, column=column, data_type=data_type)
 
     context = {
-        "columns": columns,
+        "columns": sorted(columns, key=lambda x: x["value"]),
     }
 
     return graph.to_html(
