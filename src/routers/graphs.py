@@ -220,15 +220,14 @@ async def get_indices_precios_graph(
 
 @router.get("/graph/jp/cycles")
 async def get_jp_cycles_graph(
-    type: str,
     column: str,
 ):
     graph, columns = IndexDataGraph().create_jp_cycles_graphs(
-        type=type, column=column
+        column=column
     )
 
     context = {
         "columns": columns,
     }
 
-    return graph.to_html(fullhtml=False, output_div=f"{type}_jp_cycles"), context
+    return graph.to_html(fullhtml=False, output_div="jp_cycles"), context
