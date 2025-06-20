@@ -217,3 +217,17 @@ async def get_indices_precios_graph(
     }
 
     return graph.to_html(fullhtml=False, output_div="indices_precios"), context
+
+@router.get("/graph/jp/cycles")
+async def get_jp_cycles_graph(
+    column: str,
+):
+    graph, columns = IndexDataGraph().create_jp_cycles_graphs(
+        column=column
+    )
+
+    context = {
+        "columns": columns,
+    }
+
+    return graph.to_html(fullhtml=False, output_div="jp_cycles"), context
