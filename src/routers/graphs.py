@@ -231,3 +231,20 @@ async def get_jp_cycles_graph(
     }
 
     return graph.to_html(fullhtml=False, output_div="jp_cycles"), context
+
+
+@router.get("/graph/jp/estatales")
+async def get_spendinge_estatales_graph(
+    period: str = "monthly",
+    metric: str = "contrib_prop_inmueble_ano_corr_r0110",
+):
+    graph, metrics = IndexDataGraph().create_spending_chart(
+        period=period,
+        metric=metric
+    )
+
+    context = {
+        "metric": metrics,
+    }
+
+    return graph.to_html(fullhtml=False, output_div="estatales"), context
