@@ -123,7 +123,7 @@ async def get_indicadores_graph(
     )
 
     context = {
-        "columns": sorted(columns, key=lambda x: x["value"]),
+        "columns": columns,
     }
 
     return graph.to_html(), context
