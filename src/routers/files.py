@@ -157,6 +157,17 @@ async def get_energy_file(
         df.write_csv(file_path)
     return FileResponse(file_path, media_type="text/csv", filename="energy.csv")
 
+@router.get("/files/index/demographic/")
+async def get_energy_file(
+    time_frame: str,
+):
+    file_path = os.path.join(os.getcwd(), "data", "processed", f"{time_frame}_demographic.csv")
+
+    if not os.path.exists(os.path.join(os.getcwd(), "data", "processed", f"{time_frame}_demographic.csv")):
+        df = di.jp_demographic_data(time_frame)
+        df.write_csv(file_path)
+    return FileResponse(file_path, media_type="text/csv", filename=f"{time_frame}_demographic.csv")
+
 # @router.get("/files/index/consumer")
 # async def get_consumer_file(update: bool = False):
 #     df = di.process_consumer(update)
