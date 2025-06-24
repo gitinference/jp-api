@@ -168,6 +168,22 @@ async def get_demographic_file(
         df.write_csv(file_path)
     return FileResponse(file_path, media_type="text/csv", filename=f"{time_frame}_demographic.csv")
 
+@router.get("/files/index/cycle/")
+async def get_cycle_file(
+):
+    try:
+        file_path = os.path.join(
+            os.getcwd(), "data", "processed", f"jp_cycle.csv"
+        )
+        df = di.jp_cycle_data()        
+        df.to_csv(file_path)
+        return FileResponse(
+            file_path, media_type="text/csv", filename=f"jp_cycle.csv"
+        )
+    except ValueError:
+        return {"error": "invalid timeframe"}
+    
+
 # @router.get("/files/index/consumer")
 # async def get_consumer_file(update: bool = False):
 #     df = di.process_consumer(update)
