@@ -157,7 +157,7 @@ async def get_energy_file(
         df.write_csv(file_path)
     return FileResponse(file_path, media_type="text/csv", filename="energy.csv")
 
-@router.get("/files/index/demographic/")
+@router.get("/files/index/demographic")
 async def get_demographic_file(
     time_frame: str,
 ):
