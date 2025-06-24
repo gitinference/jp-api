@@ -248,3 +248,15 @@ async def get_spendinge_estatales_graph(
     }
 
     return graph.to_html(fullhtml=False, output_div="estatales"), context
+
+@router.get("/graph/demographic/")
+async def get_demographic_graph(time_frame: str, column: str):
+    graph, columns = IndexDataGraph().create_demographic_graph(time_frame=time_frame, column=column)
+
+    context = {
+        "columns": sorted(columns, key=lambda x: x["label"]),
+    }
+
+    return graph.to_html(
+        fullhtml=False, output_div=f"demograficos"
+    ), context
