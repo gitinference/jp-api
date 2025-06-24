@@ -147,13 +147,13 @@ async def get_awards_category_file(
 
 @router.get("/files/index/energy/")
 async def get_energy_file(
-    time_frame: str = "",
+    time_frame: str = "monthly",
     level: str = "",
 ):
     file_path = os.path.join(os.getcwd(), "data", "processed", "energy.csv")
 
     if not os.path.exists(os.path.join(os.getcwd(), "data", "processed", "energy.csv")):
-        df = di.process_energy_data(time_frame, level)
+        df, columns  = di.process_energy_data(time_frame, level)
         df.write_csv(file_path)
     return FileResponse(file_path, media_type="text/csv", filename="energy.csv")
 
