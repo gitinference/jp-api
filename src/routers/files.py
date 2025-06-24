@@ -158,7 +158,7 @@ async def get_energy_file(
     return FileResponse(file_path, media_type="text/csv", filename="energy.csv")
 
 @router.get("/files/index/demographic/")
-async def get_energy_file(
+async def get_demographic_file(
     time_frame: str,
 ):
     file_path = os.path.join(os.getcwd(), "data", "processed", f"{time_frame}_demographic.csv")
