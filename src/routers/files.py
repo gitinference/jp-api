@@ -184,6 +184,18 @@ async def get_cycle_file(
         return {"error": "invalid timeframe"}
     
 
+
+@router.get("/files/index/gastos_estatales/")
+async def get_gastos_estatales_file(
+    time_frame: str = "",
+    level: str = "",
+):
+    file_path = os.path.join(os.getcwd(), "data", "processed", "gastos_estatales.csv")
+
+    if not os.path.exists(os.path.join(os.getcwd(), "data", "processed", "gastos_estatales.csv")):
+        df, _ = di.process_spending_data(time_frame, level)
+        df.write_csv(file_path)
+    return FileResponse(file_path, media_type="text/csv", filename="gastos_estatales.csv")
 # @router.get("/files/index/consumer")
 # async def get_consumer_file(update: bool = False):
 #     df = di.process_consumer(update)
@@ -191,11 +203,4 @@ async def get_cycle_file(
 #         os.getcwd(), "data", "consumer.csv"
 #     df.to_csv(file_path)
 #     return FileResponse(file_path, media_type="text/csv", filename="consumer.csv")
-#
-#
-# @router.get("/files/index/jp_index")
-# async def get_jp_index_file(update: bool = False):
-#     df = di.process_jp_index(update)
-#     file_path = os.path.join(os.getcwd(), "data", "jp_index.csv")
-#     df.write_csv(file_path)
-#     return FileResponse(file_path, media_type="text/csv", filename="jp_index.csv")
+
