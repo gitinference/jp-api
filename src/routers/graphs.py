@@ -266,7 +266,7 @@ async def get_nomina_graph(time_frame: str, naics_desc: str, data_type: str):
     graph, naics_desc = graphGenerator().gen_wages_graph(time_frame, naics_desc, data_type)
 
     context = {
-        "naics": naics_desc,
+        "columns": naics_desc,
     }
 
     return graph.to_html(
