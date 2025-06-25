@@ -168,6 +168,17 @@ async def get_demographic_file(
         df.write_csv(file_path)
     return FileResponse(file_path, media_type="text/csv", filename=f"{time_frame}_demographic.csv")
 
+@router.get("/files/qcew/nomina")
+async def get_nomina_file(
+    time_frame: str,
+):
+    file_path = os.path.join(os.getcwd(), "data", "processed", f"{time_frame}_nomina.csv")
+
+    if not os.path.exists(os.path.join(os.getcwd(), "data", "processed", f"{time_frame}_nomina.csv")):
+        df = dc.get_wages_data(time_frame)
+        df.write_csv(file_path)
+    return FileResponse(file_path, media_type="text/csv", filename=f"{time_frame}_nomina.csv")
+
 @router.get("/files/index/cycle/")
 async def get_cycle_file(
 ):
