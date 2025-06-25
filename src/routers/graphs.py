@@ -260,3 +260,15 @@ async def get_demographic_graph(time_frame: str, column: str):
     return graph.to_html(
         fullhtml=False, output_div=f"demograficos"
     ), context
+
+@router.get("/graph/nomina/")
+async def get_nomina_graph(time_frame: str, naics_desc: str, data_type: str):
+    graph, naics_desc = graphGenerator().gen_wages_graph(time_frame, naics_desc, data_type)
+
+    context = {
+        "naics": naics_desc,
+    }
+
+    return graph.to_html(
+        fullhtml=False, output_div=f"{data_type}_nomina"
+    ), context
