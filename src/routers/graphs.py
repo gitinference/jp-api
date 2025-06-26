@@ -233,10 +233,10 @@ async def get_jp_cycles_graph(
     return graph.to_html(fullhtml=False, output_div="jp_cycles"), context
 
 
-@router.get("/graph/jp/estatales")
+@router.get("/graph/jp/gastos_estatales")
 async def get_spendinge_estatales_graph(
     period: str = "monthly",
-    metric: str = "contrib_prop_inmueble_ano_corr_r0110",
+    metric: str = "contrib_prop_inmueble_ano_corr_e1110",
 ):
     graph, metrics = IndexDataGraph().create_spending_chart(
         period=period,
@@ -244,10 +244,26 @@ async def get_spendinge_estatales_graph(
     )
 
     context = {
-        "metric": metrics,
+        "metric_gast": metrics,
     }
 
-    return graph.to_html(fullhtml=False, output_div="estatales"), context
+    return graph.to_html(fullhtml=False, output_div="spending_estatales"), context
+
+@router.get("/graph/jp/revenues_estatales")
+async def get_revenue_estatales_graph(
+    period: str = "monthly",
+    metric: str = "contrib_prop_inmueble_ano_corr_r0110",
+):
+    graph, metrics = IndexDataGraph().create_revenue_chart(
+        period=period,
+        metric=metric
+    )
+
+    context = {
+        "metric_rev": metrics,
+    }
+
+    return graph.to_html(fullhtml=False, output_div="revenue_estatales"), context
 
 @router.get("/graph/demographic/")
 async def get_demographic_graph(time_frame: str, column: str):
