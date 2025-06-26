@@ -207,11 +207,15 @@ async def get_gastos_estatales_file(
         df, _ = di.process_spending_data(time_frame, level)
         df.write_csv(file_path)
     return FileResponse(file_path, media_type="text/csv", filename="gastos_estatales.csv")
-# @router.get("/files/index/consumer")
-# async def get_consumer_file(update: bool = False):
-#     df = di.process_consumer(update)
-#     file_path = os.path.join(
-#         os.getcwd(), "data", "consumer.csv"
-#     df.to_csv(file_path)
-#     return FileResponse(file_path, media_type="text/csv", filename="consumer.csv")
+
+@router.get("/files/index/proyecciones/")
+async def get_proyecciones_file(
+    time_frame: str,
+):
+    file_path = os.path.join(os.getcwd(), "data", "processed", f"{time_frame}_proyecciones.csv")
+
+    if not os.path.exists(os.path.join(os.getcwd(), "data", "processed", f"{time_frame}_proyecciones.csv")):
+        df = di.jp_proyecciones_data(time_frame)
+        df.write_csv(file_path)
+    return FileResponse(file_path, media_type="text/csv", filename=f"{time_frame}_proyecciones.csv")
 
