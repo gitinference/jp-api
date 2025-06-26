@@ -219,3 +219,15 @@ async def get_proyecciones_file(
         df.write_csv(file_path)
     return FileResponse(file_path, media_type="text/csv", filename=f"{time_frame}_proyecciones.csv")
 
+@router.get("/files/index/revenues_estatales/")
+async def get_gastos_estatales_file(
+    time_frame: str = "",
+    level: str = "",
+):
+    file_path = os.path.join(os.getcwd(), "data", "processed", "revenues_estatales.csv")
+
+    if not os.path.exists(os.path.join(os.getcwd(), "data", "processed", "revenues_estatales.csv")):
+        df, _ = di.process_spending_data(time_frame, level)
+        df.write_csv(file_path)
+    return FileResponse(file_path, media_type="text/csv", filename="revenues_estatales.csv")
+
