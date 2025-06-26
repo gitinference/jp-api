@@ -273,3 +273,15 @@ async def get_nomina_graph(time_frame: str, naics_desc: str, data_type: str, col
     return graph.to_html(
         fullhtml=False, output_div=f"{data_type}_nomina"
     ), context
+    
+@router.get("/graph/proyecciones/")
+async def get_proyecciones_graph(time_frame: str, column: str):
+    graph, columns = IndexDataGraph().create_proyecciones_graph(time_frame=time_frame, column=column)
+
+    context = {
+        "columns": sorted(columns, key=lambda x: x["label"]),
+    }
+
+    return graph.to_html(
+        fullhtml=False, output_div=f"proyecciones"
+    ), context
