@@ -69,6 +69,7 @@ async def get_product_hts_graph(
     level_filter: str = "",
     time_frame: str = "",
     trade_type: str = "",
+    data_type: str = ""
 ):
     graph, context = DataGraph(database_file="data/data.ddb").gen_hts_chart(
         level=level,
@@ -77,8 +78,9 @@ async def get_product_hts_graph(
         level_filter=level_filter,
         frequency=time_frame,
         trade_type=trade_type,
+        data_type=data_type
     )
-    return graph.to_html(), context
+    return graph.to_html(fullhtml=False, output_div=f"{data_type}_hts"), context
 
 
 @router.get("/graph/product-ranking/")
