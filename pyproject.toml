@@ -1,7 +1,7 @@
 [project]
 name = "jp-api"
 authors = [{ name = "Alejandro Ousland", email = "alejandro.ouslan@upr.edu" }]
-version = "1.6.9"
+version = "1.6.10"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
