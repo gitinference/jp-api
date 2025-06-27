@@ -201,12 +201,12 @@ async def get_gastos_estatales_file(
     time_frame: str = "",
     level: str = "",
 ):
-    file_path = os.path.join(os.getcwd(), "data", "processed", "gastos_estatales.csv")
+    file_path = os.path.join(os.getcwd(), "data", "processed",  f"{time_frame}_gastos_estatales.csv")
 
     df, _ = di.process_spending_data(time_frame, level)
     if not os.path.exists(os.path.join(os.getcwd(), "data", "processed",  f"{time_frame}_gastos_estatales.csv")):
         df.write_csv(file_path)
-    return FileResponse(file_path, media_type="text/csv", filename="gastos_estatales.csv")
+    return FileResponse(file_path, media_type="text/csv", filename= f"{time_frame}_gastos_estatales.csv")
 
 @router.get("/files/index/proyecciones/")
 async def get_proyecciones_file(
@@ -224,10 +224,11 @@ async def get_gastos_estatales_file(
     time_frame: str = "",
     level: str = "",
 ):
-    file_path = os.path.join(os.getcwd(), "data", "processed", "revenues_estatales.csv")
+    file_path = os.path.join(os.getcwd(), "data", "processed",  f"{time_frame}_revenues_estatales.csv")
 
     df, _ = di.process_revenue_data(time_frame, level)
     if not os.path.exists(os.path.join(os.getcwd(), "data", "processed", "revenues_estatales.csv")):
+
         df.write_csv(file_path)
-    return FileResponse(file_path, media_type="text/csv", filename="revenues_estatales.csv")
+    return FileResponse(file_path, media_type="text/csv", filename= f"{time_frame}_revenues_estatales.csv")
 
