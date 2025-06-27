@@ -203,8 +203,8 @@ async def get_gastos_estatales_file(
 ):
     file_path = os.path.join(os.getcwd(), "data", "processed", "gastos_estatales.csv")
 
-    if not os.path.exists(os.path.join(os.getcwd(), "data", "processed", "gastos_estatales.csv")):
-        df, _ = di.process_spending_data(time_frame, level)
+    df, _ = di.process_spending_data(time_frame, level)
+    if not os.path.exists(os.path.join(os.getcwd(), "data", "processed",  f"{time_frame}_gastos_estatales.csv")):
         df.write_csv(file_path)
     return FileResponse(file_path, media_type="text/csv", filename="gastos_estatales.csv")
 
@@ -226,8 +226,8 @@ async def get_gastos_estatales_file(
 ):
     file_path = os.path.join(os.getcwd(), "data", "processed", "revenues_estatales.csv")
 
+    df, _ = di.process_revenue_data(time_frame, level)
     if not os.path.exists(os.path.join(os.getcwd(), "data", "processed", "revenues_estatales.csv")):
-        df, _ = di.process_revenue_data(time_frame, level)
         df.write_csv(file_path)
     return FileResponse(file_path, media_type="text/csv", filename="revenues_estatales.csv")
 
