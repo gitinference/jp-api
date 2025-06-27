@@ -290,7 +290,7 @@ async def get_nomina_graph(time_frame: str, naics_desc: str, data_type: str, col
         fullhtml=False, output_div=f"{data_type}_nomina"
     ), context
     
-@router.get("/graph/nomina/")
+@router.get("/graph/negocios/")
 async def get_nomina_graph(time_frame: str, naics_desc: str, data_type: str, column: str):
     graph, businesses, type = graphGenerator().gen_wages_graph(time_frame, naics_desc, data_type, column)
 
