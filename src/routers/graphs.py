@@ -316,3 +316,15 @@ async def get_proyecciones_graph(time_frame: str, column: str):
     return graph.to_html(
         fullhtml=False, output_div=f"proyecciones"
     ), context
+
+@router.get("/graph/macro/")
+async def get_macro_graph(time_frame: str, column: str):
+    graph, columns = IndexDataGraph().create_macro_graph(time_frame=time_frame, column=column)
+
+    context = {
+        "columns": sorted(columns, key=lambda x: x["label"]),
+    }
+
+    return graph.to_html(
+        fullhtml=False, output_div=f"macro"
+    ), context
