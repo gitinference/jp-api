@@ -63,12 +63,13 @@ async def get_org_file(
 @router.get("/files/index/indicators/")
 async def get_indicators_file(
     time_frame: str,
+    level: str
 ):
     try:
         file_path = os.path.join(
             os.getcwd(), "data", "processed", f"jp_indicators_{time_frame}.csv"
         )
-        df = di.jp_indicator_data(time_frame=time_frame)
+        df = di.jp_indicator_data(time_frame=time_frame, data_type=level)
         df.write_csv(file_path)
         return FileResponse(
             file_path, media_type="text/csv", filename=f"jp_indicators_{time_frame}.csv"

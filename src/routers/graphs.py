@@ -116,19 +116,21 @@ async def get_naics_graph(
 async def get_indicadores_graph(
     time_frame: str,
     column: str,
+    data_type: str,
 ):
     graph, columns = IndexDataGraph(
         database_file="data/data.ddb"
     ).create_indicators_graph(
         time_frame=time_frame,
         column=column,
+        data_type=data_type
     )
 
     context = {
         "columns": columns,
     }
 
-    return graph.to_html(), context
+    return graph.to_html(fullhtml=False, output_div=f"{data_type}_indicadores"), context
 
 
 @router.get("/graph/consumer/")
