@@ -232,10 +232,15 @@ async def get_gastos_estatales_file(
 @router.get("/files/index/macro/")
 async def get_macro_file(
     time_frame: str,
+    level: str
 ):
-    file_path = os.path.join(os.getcwd(), "data", "processed", f"{time_frame}_macro.csv")
+    file_path = os.path.join(os.getcwd(), "data", "processed", f"{time_frame}_{level}_macro.csv")
 
-    if not os.path.exists(os.path.join(os.getcwd(), "data", "processed", f"{time_frame}_macro.csv")):
-        df, dc = di.pull_macrodata(time_frame)
+    if not os.path.exists(os.path.join(os.getcwd(), "data", "processed", f"{time_frame}_{level}_macro.csv")):
+        df_1950, df_2001 = di.pull_macrodata(time_frame)
+        if level == 'df_1950':
+            df = df_1950
+        elif level == 'df_2001':
+            df = df_2001
         df.write_csv(file_path)
-    return FileResponse(file_path, media_type="text/csv", filename=f"{time_frame}_macro.csv")
+    return FileResponse(file_path, media_type="text/csv", filename=f"{time_frame}_{level}_macro.csv")

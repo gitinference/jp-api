@@ -320,13 +320,18 @@ async def get_proyecciones_graph(time_frame: str, column: str):
     ), context
 
 @router.get("/graph/macro/")
-async def get_macro_graph(time_frame: str, column: str):
-    graph, columns = IndexDataGraph().create_macro_graph(time_frame=time_frame, column=column)
+async def get_macro_graph(time_frame: str, column: str, data_type):
+    graph, columns = IndexDataGraph().create_macro_graph(time_frame=time_frame, column=column, data_type=data_type)
 
-    context = {
-        "columns": sorted(columns, key=lambda x: x["label"]),
-    }
+    if data_type == 'df_1950':
+        context = {
+            "columns": sorted(columns, key=lambda x: x["label"]),
+        }
+    else:
+        context = {
+            "columns_2": sorted(columns, key=lambda x: x["label"]),
+        }
 
     return graph.to_html(
-        fullhtml=False, output_div=f"macro"
+        fullhtml=False, output_div=f"{data_type}_macro"
     ), context
