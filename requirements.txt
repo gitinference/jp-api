@@ -290,7 +290,7 @@ tzdata==2025.2
     # via
     #   ibis-framework
     #   pandas
-urllib3==2.5.0
+urllib3==2.6.0
     # via
     #   jp-api (pyproject.toml)
     #   requests
