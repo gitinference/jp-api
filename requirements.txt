@@ -69,7 +69,7 @@ fastapi-cloud-cli==0.3.1
     # via fastapi-cli
 fastexcel==0.14.0
     # via jp-api (pyproject.toml)
-geopandas==1.0.1
+geopandas==1.1.2
     # via jp-api (pyproject.toml)
 greenlet==3.2.2
     # via sqlalchemy
